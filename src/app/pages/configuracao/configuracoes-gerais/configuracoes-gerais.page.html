@@ -1,0 +1,68 @@
+<ion-header>
+    <ion-toolbar class="ion-text-center">
+        <ion-buttons slot="start">
+        <ion-back-button defaultHref="/menu-principal" text=""></ion-back-button>
+        </ion-buttons>
+        <ion-title class="ion-text-uppercase">Configurações Gerais</ion-title>
+        <ion-buttons slot="end">
+        <ion-menu-button menuId="main-content"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>   
+</ion-header>
+<ion-content>
+    <ion-row>
+        <ion-col size="12" class="ion-text-center">
+            <ion-button expand="block" size="large" (click)="alterarPerfilFormulario($event)">Perfil Formulário</ion-button>
+        </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col size="12" class="ion-text-center">
+            <ion-button expand="block" size="large" (click)="atualizarMotivoAlta()">Atualizar Motivos de Alta</ion-button>
+        </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col size="12" class="ion-text-center">
+            <ion-button expand="block" size="large" (click)="atualizarTipoAcomodacao()">Atualizar Tipos de Acomodação Inicial</ion-button>
+        </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col size="12" class="ion-text-center">
+            <ion-button expand="block" size="large" (click)="atualizarTipoInternacao()">Atualizar Tipos de Internação</ion-button>
+        </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col size="12" class="ion-text-center">
+            <ion-button expand="block" size="large" (click)="atualizarCaraterAtendimento()">Atualizar Caráter do Atendimento</ion-button>
+        </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col size="12" class="ion-text-center">
+            <ion-button expand="block" size="large" (click)="atualizarOrigemInternacao()">Atualizar Origem Internação</ion-button>
+        </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col size="12" class="ion-text-center">
+            <ion-button expand="block" size="large" (click)="atualizarPosologia()">Atualizar Posologias</ion-button>
+        </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col size="12" class="ion-text-center">
+            <ion-button expand="block" size="large" (click)="atualizarItensPrincipais()">Atualizar Itens principais</ion-button>
+        </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col size="12" class="ion-text-center">
+            <ion-button expand="block" size="large" (click)="atualizarUF()">Atualizar UF</ion-button>
+        </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col size="12" class="ion-text-center">
+            <ion-button expand="block" size="large" (click)="abirTelaExcluirAcompanhamentosEncerrados()">Apagar Acompanhamentos Encerrados</ion-button>
+        </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col size="12" class="ion-text-center">
+            <ion-button expand="block" size="large" (click)="enviarAcompanhamentosEmail()">Enviar os acompanhamentos por e-mail</ion-button>
+        </ion-col>
+    </ion-row>
+</ion-content>

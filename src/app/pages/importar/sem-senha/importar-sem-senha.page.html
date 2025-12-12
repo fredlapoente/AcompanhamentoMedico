@@ -1,0 +1,61 @@
+<ion-header>
+    <ion-toolbar class="ion-text-center">
+        <ion-buttons slot="start">
+        <ion-back-button defaultHref="/menu-principal" text=""></ion-back-button>
+        </ion-buttons>
+        <ion-title class="ion-text-uppercase">Importar Acompanhamento</ion-title>
+        <ion-buttons slot="end">
+        <ion-menu-button menuId="main-content"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <form [formGroup]="formImportar">      
+        <ion-card *ngIf="!prestador">      
+            <ion-item>
+            <ion-label position="floating">Estado</ion-label>
+            <ion-select formControlName="estado" interface="action-sheet" placeholder="Selecione" cancelText="Cancelar" (ionChange)="exibirPrestador()">
+                <ion-select-option *ngFor="let estado of listaEstados" [value]="estado.seqDominio">{{ estado.desDominio }}</ion-select-option>
+            </ion-select>                   
+            </ion-item> 
+            <ion-item mode="md" lines="none" class="item-error" *ngIf="(estado.dirty || estado.touched) && estado.hasError('required')">
+            <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+                <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+            </ion-item>       
+            <ng-container *ngIf="listaPrestadores.length > 0">
+            <ion-item>
+                <ion-label position="floating">Prestador</ion-label>
+                <ion-select formControlName="prestadorSelecionado" interface="action-sheet" placeholder="Selecione" cancelText="Cancelar" (ionChange)="exibirFiltros()">
+                <ion-select-option *ngFor="let prestador of listaPrestadores" [value]="prestador.idPrestador">{{ prestador.nomePrestador }}</ion-select-option>
+                </ion-select> 
+            </ion-item> 
+            <ion-item mode="md" lines="none" class="item-error" *ngIf="(prestadorSelecionado.dirty || prestadorSelecionado.touched) && prestadorSelecionado.hasError('required')">
+                <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+                <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+                </ion-note>
+            </ion-item>              
+            </ng-container>
+        </ion-card>
+        <ion-card *ngIf="showFiltros">   
+            <ion-card-header>
+            <ion-card-title class="ion-text-center">Opções de Busca</ion-card-title>
+            </ion-card-header>                        
+            <ion-item>
+                <ion-label position="floating">Paciente</ion-label>
+                <ion-input type="text" inputmode="text" formControlName="filtroPaciente" inputmode="text"></ion-input>
+            </ion-item>            
+            <ion-item>
+                <ion-label position="floating">Número da Carteira</ion-label>
+                <ion-input type="text" inputmode="text" formControlName="filtroNumeroCarteira" inputmode="text"></ion-input>
+            </ion-item>                      
+            <ion-row>
+            <ion-col size="12" class="ion-text-center">
+                <ion-button (click)="buscarAcompanhamento()" expand="block" size="large">
+                Buscar
+                </ion-button>  
+            </ion-col>
+            </ion-row>               
+        </ion-card> 
+    </form>
+</ion-content>      

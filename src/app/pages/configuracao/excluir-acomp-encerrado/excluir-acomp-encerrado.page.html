@@ -1,0 +1,54 @@
+<ion-header>
+    <ion-toolbar class="ion-text-center">
+        <ion-buttons slot="start">
+        <ion-back-button defaultHref="/menu-principal" text=""></ion-back-button>
+        </ion-buttons>
+        <ion-title class="ion-text-uppercase">Excluir Acompanhamentos Encerrados</ion-title>
+        <ion-buttons slot="end">
+        <ion-menu-button menuId="main-content"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>   
+</ion-header>
+<ion-content>
+    <form [formGroup]="formExcluirAcompEncerrado">   
+        <ion-card>   
+            <ion-card-header>
+                <ion-card-title class="ion-text-center">Filtrar Acompanhamentos Encerrados</ion-card-title>
+            </ion-card-header>        
+            <ion-item>
+                <ion-label position="floating"></ion-label>
+                <ion-select formControlName="filtroPeriodo" interface="action-sheet" placeholder="Selecione" cancelText="Cancelar" okTxt="Selecionar" (ionChange)="buscarAcompanhamentosEncerrados()">
+                    <ion-select-option *ngFor="let periodo of listaPeriodo" [value]="periodo">{{ periodo }}</ion-select-option>
+                </ion-select>                
+            </ion-item>            
+        </ion-card> 
+        <ion-card class="ion-no-margin" *ngIf="listaAcompEncerrados.length != 0">         
+            <ion-card-header>
+                <ion-card-title class="ion-text-center">Acompanhamentos Encerrados</ion-card-title>
+            </ion-card-header>
+            <ion-item-sliding *ngFor = "let acompanhamento of listaAcompEncerrados; let i=index">
+              <ion-item>    
+                <ion-row>        
+                  <ion-col size="12">
+                    <span class="texto-card-title" [innerHTML]="acompanhamento.beneficiario.nomeBeneficiario"></span><br>
+                    <span class="texto-card-label">Carteira: </span><span class="texto-card-text" [innerHTML]="acompanhamento.beneficiario.carteiraBeneficiario"></span><br>
+                    <span class="texto-card-label">Senha: </span><span class="texto-card-text" [innerHTML]="acompanhamento.senhaAutorizacao.senha"></span><br>
+                    <span class="texto-card-label">Prestador: </span><span class="texto-card-text" [innerHTML]="acompanhamento.prestador.nomePrestador"></span><br>                     
+                    <span class="texto-card-label">Encerramento: </span><span class="texto-card-text" [innerHTML]="acompanhamento.dataEncerramento"></span>                     
+                </ion-col>
+                </ion-row>
+              </ion-item>
+              <ion-item-options>
+                <ion-button expand="block" (click)="apagarAcompanhamento(i)">
+                  <ion-icon name="trash"></ion-icon>Excluir
+                </ion-button>
+              </ion-item-options>
+            </ion-item-sliding>      
+        </ion-card>
+        <ion-row *ngIf="listaAcompEncerrados.length != 0">
+            <ion-col size="12" class="ion-text-center">
+                <ion-button expand="block" size="large" (click)="apagarTodos()">Excluir Todos</ion-button>
+            </ion-col>           
+        </ion-row> 
+    </form>    
+</ion-content>        

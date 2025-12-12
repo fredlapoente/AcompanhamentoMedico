@@ -1,0 +1,49 @@
+<ion-header no-border>
+  <ion-toolbar color="secondary" class="ion-text-center ion-padding header-toolbar">
+    <ion-img class="login-image-header" src="../assets/images/logo-acomp.png"></ion-img>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-no-padding" scrollY="false">
+  <ion-grid class="height-100" fixed>
+    <ion-row class="height-100 ion-align-items-center ion-justify-content-center">
+      <ion-col size-sm="8" size-md="8" size-lg="6" size-xl="6" class="ion-no-padding ion-text-center ion-no-margin">
+        <form [formGroup]="formRecSenha" (submit)="recuperarSenha()" (keyup.enter)="recuperarSenha()">
+          <ion-item>
+            <ion-icon slot="start" name="person" color="light"></ion-icon>
+            <ion-label position="floating">Usuário</ion-label>
+            <ion-input type="text" formControlName="usuario" inputmode="text" enterkeyhint="go">
+            </ion-input>
+          </ion-item>
+          <ion-item mode="md" lines="none" class="item-error">
+            <ion-note color="warning" class="ion-padding-horizontal" *ngIf="(usuario.dirty || usuario.touched) && usuario.hasError('required')">Campo obrigatório
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+          </ion-item>
+          <ion-button class="ion-margin-top custom-button" type="submit" fill="clear" expand="block" size="large"
+            [disabled]="!formRecSenha.valid">
+            ENVIAR
+          </ion-button>
+        </form>
+        <ion-row class="ion-text-center">
+          <ion-col>
+            <ion-button class="no-weight" fill="clear" color="tertiary" [routerLink]="['/login']">
+              <ion-icon slot="start" name="arrow-back"></ion-icon>
+              VOLTAR
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer class="ion-text-center" *ngIf="urlImageOperadora" no-border>
+  <ion-toolbar>
+    <ion-row class="ion-margin-bottom">
+      <ion-col>
+        <ion-img class="login-image-footer" src="{{urlImageOperadora}}"></ion-img>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-footer>

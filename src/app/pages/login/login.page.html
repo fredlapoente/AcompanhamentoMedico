@@ -1,0 +1,84 @@
+<ion-header no-border>
+  <ion-toolbar color="secondary" class="ion-text-center">
+    <ion-img class="login-image-header" src="../assets/images/logo-acomp.png"></ion-img>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-no-padding">
+  <ion-grid class="height-100">
+    <ion-row class="height-100 ion-align-items-end ion-justify-content-center">
+      <ion-col size-sm="8" size-md="8" size-lg="6" size-xl="6" class="ion-no-padding ion-text-center ion-no-margin">
+        <form [formGroup]="formLogin" (submit)="login()">
+          <ion-item>
+            <ion-icon slot="start" name="person" color="light"></ion-icon>
+            <ion-label position="floating">Usuário</ion-label>
+            <ion-input type="text" formControlName="usuario" inputmode="text" enterkeyhint="next"
+              (keyup.enter)="toNextField(inputSenha)">
+            </ion-input>
+          </ion-item>
+          <ion-item mode="md" lines="none" class="item-error">
+            <ion-note color="warning" class="ion-padding-horizontal"
+              *ngIf="(usuario.dirty || usuario.touched) && usuario.hasError('required')">Campo obrigatório
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+            <ion-note color="warning" class="ion-padding-horizontal"
+              *ngIf="(usuario.dirty || usuario.touched) && usuario.hasError('pattern')">Campo levemente incorreto
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+          </ion-item>
+
+          <ion-item>
+            <ion-icon slot="start" name="lock" color="light"></ion-icon>
+            <ion-label position="floating">Senha</ion-label>
+            <ion-input type="{{passwordType}}" formControlName="senha" enterkeyhint="go" (keyup.enter)="login()"
+              #inputSenha></ion-input>
+            <ion-icon slot="end" name="{{icone}}" [ngStyle]="{'color': buttonColor}"
+              (mousedown)="$event.preventDefault(); showHidePassword()">
+            </ion-icon>
+          </ion-item>
+          <ion-item mode="md" lines="none" class="item-error">
+            <ion-note color="warning" class="ion-padding-horizontal"
+              *ngIf="(senha.dirty || senha.touched) && senha.hasError('required')">Campo obrigatório
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+            <ion-note color="warning" class="ion-padding-horizontal"
+              *ngIf="(senha.dirty || senha.touched) && senha.hasError('minlength')">Min 4 caracteres
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+            <ion-note color="warning" class="ion-padding-horizontal"
+              *ngIf="(senha.dirty || senha.touched) && senha.hasError('maxlength')">Max 4 caracteres
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+          </ion-item>
+
+          <ion-button class="ion-margin-top custom-button" type="submit" fill="clear" expand="block" 
+            [disabled]="!formLogin.valid">
+            ENTRAR
+          </ion-button>
+        </form>
+        <ion-row class="ion-text-center">
+          <ion-col>
+            <ion-button class="no-weight trocar-operadora" fill="clear" (click)="toSelecionarOperadora()">
+              <ion-icon slot="start" name="arrow-back"></ion-icon>
+              TROCAR OPERADORA
+            </ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-text-center">
+          <ion-col>
+            <ion-button class="no-weight trocar-operadora" fill="clear" (click)="toRecuperarSenha()">
+              <ion-icon slot="start" name="key"></ion-icon>
+              RECUPERAR SENHA
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer class="ion-text-center" *ngIf="urlImageOperadora" no-border>
+  <ion-toolbar>
+    <ion-img class="login-image-footer" src="{{urlImageOperadora}}"></ion-img>
+  </ion-toolbar>
+</ion-footer>

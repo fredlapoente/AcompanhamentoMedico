@@ -15,7 +15,7 @@ workflows:
           npm install -g cordova@11.1.0
           npm install
 
-      - name: Remover plataforma Android
+      - name: Remover plataforma Android (evitar conflitos)
         script: |
           cordova platform remove android || true
 
@@ -23,29 +23,31 @@ workflows:
         script: |
           cordova platform remove ios || true
           cordova platform add ios@${CORDOVA_IOS_VERSION}
-          cordova prepare ios
 
-      - name: Ajustar permissões do fix_signing.sh
+      - name: Corrigir quebra de linha do fix_signing.sh (CRLF → LF)
         script: |
+          echo "Convertendo fix_signing.sh para LF..."
+          sed -i 's/\r$//' fix_signing.sh
           chmod +x fix_signing.sh
+          echo "Fix_signing pronto para execução."
 
-      - name: DEBUG ANTES do patch (ver tudo)
+      - name: DEBUG antes do patch
         script: |
-          echo "========== DEBUG ANTES =========="
-          grep -R "CODE_SIGN" -n platforms/ios || echo "Nenhum CODE_SIGN encontrado"
-          grep -R "iPhone Distribution" -n platforms/ios || echo "Nenhum iPhone Distribution encontrado"
-          grep -R "DEVELOPMENT_TEAM" -n platforms/ios || echo "Nenhum DEVELOPMENT_TEAM encontrado"
+          echo "===== ANTES DO PATCH ====="
+          PROJECT_FILE="platforms/ios/Saudi-AcomMed.xcodeproj/project.pbxproj"
+          grep -R "CODE_SIGN_IDENTITY" -n $PROJECT_FILE || echo "Nenhum CODE_SIGN_IDENTITY encontrado"
+          grep -R "DEVELOPMENT_TEAM" -n $PROJECT_FILE || echo "Nenhum DEVELOPMENT_TEAM encontrado"
 
       - name: Aplicar patch de assinatura
         script: |
           ./fix_signing.sh
 
-      - name: DEBUG DEPOIS do patch
+      - name: DEBUG depois do patch
         script: |
-          echo "========== DEBUG DEPOIS =========="
-          grep -R "CODE_SIGN" -n platforms/ios || echo "Nenhum CODE_SIGN encontrado"
-          grep -R "iPhone Distribution" -n platforms/ios || echo "Nenhum iPhone Distribution encontrado"
-          grep -R "DEVELOPMENT_TEAM" -n platforms/ios || echo "Nenhum DEVELOPMENT_TEAM encontrado"
+          echo "===== DEPOIS DO PATCH ====="
+          PROJECT_FILE="platforms/ios/Saudi-AcomMed.xcodeproj/project.pbxproj"
+          grep -R "CODE_SIGN_IDENTITY" -n $PROJECT_FILE || echo "Nenhum CODE_SIGN_IDENTITY encontrado"
+          grep -R "DEVELOPMENT_TEAM" -n $PROJECT_FILE || echo "Nenhum DEVELOPMENT_TEAM encontrado"
 
       - name: Build iOS com assinatura automática
         script: |

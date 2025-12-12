@@ -1,0 +1,6 @@
+export class RandomUtil {
+
+  static getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min) + min)
+  }
+}

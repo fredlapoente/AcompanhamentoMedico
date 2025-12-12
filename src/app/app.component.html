@@ -1,0 +1,63 @@
+<ion-app>
+  <ion-split-pane contentId="main-content">
+    <ion-menu contentId="main-content" type="overlay" side="end">
+      <ion-header>
+        <ion-menu-toggle auto-hide="false">
+          <perfil-card [usuario]="dadosUsuario" [userInitials]="userInitials">
+          </perfil-card>
+        </ion-menu-toggle>
+      </ion-header>
+      <ion-content>
+        <ion-list>
+          <ion-item-divider>
+            <ion-label>Menu</ion-label>
+          </ion-item-divider>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item [routerDirection]="'root'" [routerLink]="['/menu-principal']" detail>
+              <ion-icon slot="start" name="home"></ion-icon>
+              <ion-label>Página Inicial</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
+            <ion-item [routerDirection]="'root'" [routerLink]="[p.url]" detail>
+              <ion-icon slot="start" [name]="p.icon"></ion-icon>
+              <ion-label>
+                {{p.title}}
+              </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+        <ion-list>
+          <ion-item-divider>
+            <ion-label>Configurações</ion-label>
+          </ion-item-divider>          
+          <ion-menu-toggle auto-hide="false">
+            <ion-item [routerDirection]="'root'" [routerLink]="['/menu-principal/configuracoes-gerais']" detail>
+              <ion-icon slot="start" name="construct"></ion-icon>
+              <ion-label>Configurações Gerais</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item [routerDirection]="'root'" [routerLink]="['/menu-principal/alterar-senha']" detail>
+              <ion-icon slot="start" name="key"></ion-icon>
+              <ion-label>Alterar Senha</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item [routerDirection]="'root'" href="https://saudi.com.br/politica-de-privacidade/" detail>
+              <ion-icon slot="start" name="security"></ion-icon>
+              <ion-label>Politica de Privacidade</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item (click)="alertLogout()" detail>
+              <ion-icon slot="start" name="log-out"></ion-icon>
+              <ion-label>Sair</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+  </ion-split-pane>
+</ion-app>

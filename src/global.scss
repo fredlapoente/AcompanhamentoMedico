@@ -1,0 +1,358 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "~@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+@import '~@ionic/angular/css/display.css';
+
+/* Optional CSS utils that can be commented out */
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+
+/* CSS Class use on AppAcompanhamentoMedico Project */
+
+
+ body {
+
+  ion-label {
+    color: var(--ion-color-primary);
+  }
+  
+  ion-menu-button {
+    --color: var(--ion-color-primary-constrast);
+  }
+  
+  ion-toolbar {
+    --background: var(--ion-color-primary);
+    --color: var(--ion-color-primary-contrast);
+
+    ion-title {
+      padding: 0;
+    }
+  
+    ion-icon & {
+      --color: var(--ion-color-primary-constrast)
+    }
+    ion-button {
+      --color: var(--ion-color-primary-contrast);
+     }
+  }
+  
+  ion-search-bar {
+    --background: var(--ion-color-light);
+    --color: var(--ion-color-primary);
+  }
+  
+  ion-card-header {
+    --background: var(--ion-color-light);
+    --color: var(--ion-color-primary-contrast);
+  }
+  
+  ion-card-title {
+    --color: var(--ion-color-primary);
+  }
+  
+  ion-card-subtitle {
+    --color: var(--ion-color-primary);
+  }
+  
+  ion-footer {
+    --background: var(--ion-color-secondary);
+    --color: var(--ion-color-primary-contrast);
+  }
+  
+  ion-content {
+    --background: var(--ion-color-primary-contrast);
+  }
+  
+  ion-input {
+    --color: var(--ion-color-secondary);
+    font-weight: 600;
+  }
+  
+  ion-datetime {
+    --placeholder-color: var(--ion-color-primary);
+    opacity: 0.5;
+  }
+  
+  ion-alert {
+    --color: var(--ion-color-primary);
+  }
+  
+  ion-picker {
+    touch-action: none;
+  }
+
+  ion-item {
+    --detail-icon-color: var(--ion-color-primary);
+    --detail-icon-opacity: 0.5;
+    --color: var(--ion-color-primary);
+    --border-color: var(--ion-color-tertiary);
+    --highlight-color-invalid: var(--ion-color-warning);
+    
+    ion-icon {
+     color: var(--ion-color-primary);
+     margin-top: auto;
+   }
+   & ion-button {
+     ion-icon {
+      color: var(--ion-color-primary);
+     }
+   }
+  }
+
+  @media (max-width: 411px) {
+    ion-toolbar ion-title {
+      font-size: 1rem;
+    }
+  }
+
+  @media (max-width: 320px), (max-height: 320px) {
+    ion-toolbar ion-title {
+      font-size: 0.8rem;
+    }
+
+   ion-label, ion-input, ion-button, ion-item {
+     font-size: 0.9rem;
+   }
+
+   ion-card-title {
+     font-size: 1.1rem;
+   }
+
+   ion-card-subtitle {
+    font-size: 0.9rem;
+  }
+
+   .label-max-width-80 {
+     margin-right: 0;
+    }
+  }
+
+  .item-error {
+    margin-bottom: -2em;
+    margin-top: 0.3em;
+  }
+
+  .custom-button {
+    --background: #E4F1F1;
+    --color: #326565;
+  }
+
+  .custom-fab-button {
+    --box-shadow: none;
+    --border-style: none;
+  }
+
+  .modal {
+    --background: var(--ion-color-light);
+  }
+
+  .operadora-modal {
+    //width: 90%;    
+    //max-width: 100%;    
+    //margin: 38% 5%;    
+    //border-radius: 12px;    
+    //box-shadow: 0px 0px 20px #8b8b8b;    
+    //height: 40%;
+    .modal-wrapper{
+      --width: 100%;
+      --height: 100%;
+    } 
+  }
+
+  
+  .legenda-acompanhar-modal {
+    width: 100%;    
+    //max-width: 100%;    
+    //margin: 38% 5%;    
+    //border-radius: 12px;    
+    //box-shadow: 0px 0px 20px #8b8b8b;    
+    height: 100%;
+    .modal-wrapper{
+      --width: 100%;
+      --height: 100%;
+    } 
+  }
+
+  .mensagem-erro-sincronismo-modal {
+    width: 90%;    
+    max-width: 100%;    
+    margin: 45% 5%;    
+    border-radius: 12px;    
+    box-shadow: 0px 0px 20px #8b8b8b;    
+    height: 40%; 
+  }
+
+  .grafico-modal {
+    padding: 15vh 30px 15vh 30px;
+  }
+
+@media (min-width: 320px) and (max-width: 411px) {
+  .operadora-modal {
+    padding: 0;
+}
+  .grafico-modal {
+    padding: 0;
+  }
+}
+ 
+  .saudi-toolbar {
+    border-top: 1px solid var(--ion-color-tertiary);;
+  }
+  
+  .action-sheet-button {
+    --color: var(--ion-color-primary);
+  }
+  
+  .action-sheet-cancel {
+    --color: var(--ion-color-primary);
+  }
+  
+  .picker-opt.picker-opt-selected {
+    font-weight: bolder;
+  }
+  
+  .picker-opt {
+    color: var(--ion-color-primary);
+  }
+  
+  .picker-wrapper {
+    color: var(--ion-color-primary);
+  }
+  
+  .ios.alert-title {
+    color: var(--ion-color-primary);
+    font-weight: bolder;
+  }
+
+  .alert-title.sc-ion-alert-ios{
+    color: var(--ion-color-primary);
+    font-weight: bolder;
+  }
+
+  .md.alert-title {
+    color: var(--ion-color-primary);
+    font-weight: bolder;
+  }
+  
+  .alert-message {
+    color: var(--ion-color-primary);
+  }
+  
+  .alert-message.sc-ion-alert-ios {
+    color: var(--ion-color-primary);
+    text-align:-webkit-left
+  }
+  
+  .height-50-vh {
+    height: 50vh;
+    max-height: 50vh;
+  }
+
+  .height-100 {
+    height: 100%;
+  }
+
+  .no-height {
+    height: 0;
+  }
+  
+  .no-weight {
+    font-weight: normal;
+  }
+
+  .no-padding-bottom {
+    padding-bottom: 0;
+  }
+  
+  .margin-bottom-04em {
+    margin-bottom: .4em;
+  }
+
+  .label-max-width-80 {
+    max-width: 80px;
+  }
+  
+  .logo-saudi-acomp {
+    width: 20%;
+    max-width: 20%;
+    margin: 0 auto;
+  }
+
+  .header-toolbar {
+      border-bottom: 2px #E4F1F1 solid;
+  }
+
+  .loading-on-auth {
+    background: #fff url("/assets/images/logo-acomp.png") no-repeat center;
+
+    .loading-wrapper{
+        background: none !important;
+        box-shadow: none !important;
+        -webkit-box-shadow: none !important;
+    }
+  }
+  
+  .alert-wrapper.sc-ion-alert-md{
+    max-width: max-content;
+  }
+
+  .alert-sub-title.sc-ion-alert-md, .alert-title.sc-ion-alert-md{
+    color: var(--ion-color-primary);
+  }
+
+  .alert-message.sc-ion-alert-md{
+    color: var(--ion-color-primary);
+    font-size: 14px;
+  }
+  
+  .segment-button-checked{
+    background: var(--ion-color-tertiary-tint);
+  }
+
+  .sc-ion-popover-md-h{
+    --width: 95%;      
+  }
+
+  .sc-ion-popover-ios-h{
+    --width: 100%;
+  }
+
+  .popover-content.sc-ion-popover-ios{
+    position:initial;
+    overflow:unset;
+  }
+
+  .aling-col-last-end{
+      text-align-last: end;
+  }
+
+  .imagem-indicador-verde{
+      color: limegreen;
+  }
+
+  .imagem-indicador-vermelho{
+      color:red;
+  }
+
+  .imagem-indicador-cinza{
+      color:darkgray;
+  }
+}

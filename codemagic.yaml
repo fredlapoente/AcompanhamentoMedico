@@ -24,12 +24,19 @@ workflows:
           cordova platform remove ios || true
           cordova platform add ios@${CORDOVA_IOS_VERSION}
 
-      - name: Corrigir quebra de linha do fix_signing.sh (CRLF → LF)
+      - name: Forçar conversão do fix_signing.sh (CRLF → LF)
         script: |
-          echo "Convertendo fix_signing.sh para LF..."
-          sed -i 's/\r$//' fix_signing.sh
+          echo "Convertendo fix_signing.sh para LF (método TR + SED)..."
+
+          # Remove CRLF
+          tr -d '\r' < fix_signing.sh > fix_signing.tmp
+          mv fix_signing.tmp fix_signing.sh
+
+          # Corrige shebang
+          sed -i '' '1 s|.*|#!/usr/bin/env bash|' fix_signing.sh
+
           chmod +x fix_signing.sh
-          echo "Fix_signing pronto para execução."
+          echo "Arquivo convertido corretamente!"
 
       - name: DEBUG antes do patch
         script: |

@@ -1,0 +1,102 @@
+<ion-header>
+    <ion-toolbar class="ion-text-center">
+        <ion-buttons slot="start">
+        <ion-back-button defaultHref="/menu-principal" text=""></ion-back-button>
+        </ion-buttons>
+        <ion-title class="ion-text-uppercase">Abrir Acompanhamento</ion-title>
+        <ion-buttons slot="end">
+        <ion-menu-button menuId="main-content"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <form [formGroup]="formAbrirSemSenha">    
+      <ion-card *ngIf="!prestador">
+        <ion-item>
+          <ion-label position="floating">Perfil Formulário</ion-label>
+            <ion-select formControlName="perfilFormulario" interface="action-sheet" placeholder="Selecione" cancelText="Cancelar" okText="Ok" (ionChange)="alteraPerfilFormulario()" (ionFocus)="usuarioComecouAlterarPerfil = true">
+              <ion-select-option *ngFor="let perfil of listaPerfisFormulario" [value]="perfil.idConfigFormulario">{{ perfil.nomeConfigFormulario }}</ion-select-option>
+            </ion-select>      
+        </ion-item> 
+      </ion-card>
+      <ion-card *ngIf="!prestador">      
+        <ion-item>
+          <ion-label position="floating">Estado</ion-label>
+          <ion-select formControlName="estado" interface="action-sheet" placeholder="Selecione" cancelText="Cancelar" (ionChange)="exibirPrestador()">
+            <ion-select-option *ngFor="let estado of listaEstados" [value]="estado.seqDominio">{{ estado.desDominio }}</ion-select-option>
+          </ion-select>                   
+        </ion-item> 
+        <ion-item mode="md" lines="none" class="item-error" *ngIf="(estado.dirty || estado.touched) && estado.hasError('required')">
+          <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+            <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+          </ion-note>
+        </ion-item>       
+        <ng-container *ngIf="listaPrestadores.length > 0">
+          <ion-item>
+            <ion-label position="floating">Prestador</ion-label>
+            <ion-select formControlName="prestadorSelecionado" interface="action-sheet" placeholder="Selecione" cancelText="Cancelar" (ionChange)="exibirFiltros()">
+              <ion-select-option *ngFor="let prestador of listaPrestadores" [value]="prestador.idPrestador">{{ prestador.nomePrestador }}</ion-select-option>
+            </ion-select> 
+          </ion-item> 
+          <ion-item mode="md" lines="none" class="item-error" *ngIf="(prestadorSelecionado.dirty || prestadorSelecionado.touched) && prestadorSelecionado.hasError('required')">
+            <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+          </ion-item>              
+        </ng-container>
+      </ion-card>
+      <ion-card *ngIf="showFiltros">       
+        <ion-item *ngIf="prestador">
+          <ion-label>
+            Prestador
+            <br>
+            <span [innerHTML]="prestador.concatCodNomePrestador"></span>
+          </ion-label>          
+        </ion-item>
+        <ion-item *ngIf="prestador">
+          <ion-label position="floating">Senha</ion-label>
+          <ion-input type="text" inputmode="text" formControlName="senha" inputmode="text"></ion-input>
+        </ion-item>
+        <ion-item mode="md" lines="none" class="item-error" *ngIf="((senha.dirty || senha.touched) && senha.hasError('required')) || nomeBeneficiario.hasError('incorrect')">
+          <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+            <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+          </ion-note>
+        </ion-item>        
+        <ion-item>
+          <ion-label position="floating">Nome do Paciente</ion-label>
+          <ion-input type="text" inputmode="text" formControlName="nomeBeneficiario" inputmode="text"></ion-input>
+        </ion-item>
+        <ion-item mode="md" lines="none" class="item-error" *ngIf="((nomeBeneficiario.dirty || nomeBeneficiario.touched) && nomeBeneficiario.hasError('required')) || nomeBeneficiario.hasError('incorrect')">
+          <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+            <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+          </ion-note>
+        </ion-item>                   
+        <ion-item>
+          <ion-label position="floating">Número da Carteira do Paciente</ion-label>
+          <ion-input type="text" inputmode="text" formControlName="carteiraBeneficiario" inputmode="text"></ion-input>
+        </ion-item>
+        <ion-item mode="md" lines="none" class="item-error" *ngIf="((carteiraBeneficiario.dirty || carteiraBeneficiario.touched) && carteiraBeneficiario.hasError('required')) || carteiraBeneficiario.hasError('incorrect')">
+          <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+            <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+          </ion-note>
+        </ion-item> 
+        <ion-item>
+          <ion-label position="floating">Data de Internação</ion-label>
+          <ion-input readonly="true" clearInput (click)="abrirCalendarioDataInternacao($event)" formControlName="dataInternacao"></ion-input>
+          <ion-icon name="calendar" slot="end" class="iconCalendar" (click)="abrirCalendarioDataInternacao($event)"></ion-icon>
+        </ion-item>        
+        <ion-item mode="md" lines="none" class="item-error" *ngIf="((dataInternacao.dirty || dataInternacao.touched) && dataInternacao.hasError('required')) || dataInternacao.hasError('incorrect')">
+          <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+            <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+          </ion-note>
+        </ion-item> 
+        <ion-row>
+          <ion-col size="12" class="ion-text-center">
+            <ion-button (click)="incluirAcompanhamento()" [disabled]="!formAbrirSemSenha.valid" expand="block" size="large">
+              Salvar
+            </ion-button>  
+          </ion-col>
+        </ion-row>               
+      </ion-card>
+    </form>
+</ion-content>      

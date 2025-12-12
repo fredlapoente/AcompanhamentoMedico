@@ -1,0 +1,96 @@
+<ion-header>
+    <ion-toolbar class="ion-text-center">
+        <ion-buttons slot="start">
+        <ion-back-button defaultHref="/menu-principal" text=""></ion-back-button>
+        </ion-buttons>
+        <ion-title class="ion-text-uppercase">Anexo Acompanhamento</ion-title>
+        <ion-buttons slot="end">
+        <ion-menu-button menuId="main-content"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>   
+</ion-header>
+<ion-content>
+    <form [formGroup]="formAnexo">
+        <ion-card>   
+            <ion-card-header>
+              <ion-card-title class="ion-text-center">Lista de Observações ({{acompanhamentoMedico.senhaAutorizacao.beneficiario.nomeBeneficiario}})</ion-card-title>
+            </ion-card-header>        
+            <ion-item>
+                <ion-label>
+                    Data da Observação: <span [innerHTML]="dataObservacao"></span>
+                </ion-label>                
+            </ion-item>
+            <ion-row>
+                <ion-col size="12" class="ion-text-center">                    
+                    <ion-button expand="block" size="large"   (click)="upload()" [disabled]="acompanhamentoMedico.status === 'ENCERRADO'">
+                        <ion-icon slot="start" name="attach"></ion-icon>                        
+                        Escolher Arquivo
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col size="12" class="ion-text-center">
+                    <ion-button expand="block" size="large" (click)="tirarFoto()" [disabled]="acompanhamentoMedico.status === 'ENCERRADO'">
+                        <ion-icon slot="start" name="camera"></ion-icon>
+                        Tirar Foto
+                    </ion-button>                    
+                </ion-col>
+            </ion-row>
+            <ion-row *ngIf="photoImage !== '' && photoImage !== null">
+                <ion-col size="12" class="ion-text-center">
+                    <ion-thumbnail>
+                        <img [src]="photoImage"/> 
+                    </ion-thumbnail>                                                          
+                </ion-col>
+            </ion-row>
+            <ion-row *ngIf="uploadImage !== '' && uploadImage !== null">
+                <ion-col size="12" class="ion-text-center">
+                    <ion-thumbnail>
+                        <img [src]="uploadImage"/> 
+                    </ion-thumbnail>                                                          
+                </ion-col>
+            </ion-row>
+            <ion-item>
+                <ion-label position="stacked">Observação:</ion-label>
+                <ion-textarea class="textarea-margin-background" formControlName="observacao" rows="6" cols="20"></ion-textarea>              
+            </ion-item> 
+            <ion-item mode="md" lines="none" class="item-error" *ngIf="((observacao.dirty || observacao.touched) && observacao.hasError('required')) || observacao.hasError('incorrect')">
+                <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+                    <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+                </ion-note>
+            </ion-item>  
+            <br>        
+        </ion-card>
+        <ion-row>
+            <ion-col size="12" class="ion-text-center">
+                <ion-button expand="block" size="large" [disabled]="!formAnexo.valid" (click)="salvarAnexo()">Salvar</ion-button>
+            </ion-col>
+        </ion-row>
+        <ion-list>
+        <ion-grid *ngIf="acompanhamentoMedico.listaAcompanhamentoObs.length > 0">       
+            <ion-row class="cabecalho-tabela"> 
+                <ion-col size="3" class="col-cabecalho-tabela">Data</ion-col>
+                <ion-col size="4" class="col-cabecalho-tabela">Observação</ion-col>
+                <ion-col size="3" class="col-cabecalho-tabela">Imagem</ion-col>
+                <ion-col size="2" class="col-cabecalho-tabela">Ação</ion-col>
+            </ion-row>
+            <div *ngFor="let obs of acompanhamentoMedico.listaAcompanhamentoObs; let i=index">
+                <ion-row *ngIf="obs.tipoTransacao !== 'EXCLUIR'">                
+                    <ion-col size="3" class="col-tabela text-col-tabela-center">
+                        {{obs.dataObservacao}}
+                    </ion-col>
+                    <ion-col size="4" class="col-tabela text-col-tabela-left">
+                        {{obs.observacao}}
+                    </ion-col>
+                    <ion-col size="3" class="col-icon-tabela">
+                        <ion-icon name="attach" (click)="visualizarAnexo(i)" *ngIf="obs.anexo !== '' && obs.anexo !== null && acompanhamentoMedico.status !== 'ENCERRADO'"></ion-icon>
+                    </ion-col>
+                    <ion-col size="2" class="col-icon-tabela">                        
+                        <ion-icon name="trash" (click)="apagarAnexo(i) && acompanhamentoMedico.status !== 'ENCERRADO'"></ion-icon>
+                    </ion-col>                  
+                </ion-row>
+            </div>
+        </ion-grid>
+        </ion-list>      
+    </form>    
+</ion-content>            

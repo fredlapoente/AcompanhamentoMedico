@@ -1,0 +1,300 @@
+<ion-header>
+    <ion-toolbar class="ion-text-center">
+        <ion-buttons slot="start">
+        <ion-back-button defaultHref="/menu-principal" text=""></ion-back-button>
+        </ion-buttons>
+        <ion-title class="ion-text-uppercase">Acompanhamento Médico</ion-title>
+        <ion-buttons slot="end">
+        <ion-menu-button menuId="main-content"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>   
+</ion-header>
+<ion-content>
+    <form [formGroup]="formAcompanhamento">
+       <ion-segment (ionChange)="segmentChanged($event)" value="{{opcaoExibir}}">
+            <ion-segment-button value="paciente">
+              <ion-label>Paciente</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="acompanhamento">
+              <ion-label>Acompanhamento</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="alta">
+                <ion-label>Alta</ion-label>
+            </ion-segment-button>
+        </ion-segment>
+        <ion-list *ngIf="opcaoExibir == 'paciente'">
+            <ion-item>
+                <ion-label>Responsável pelo Acompanhamento:<br><span [innerHTML]="acompanhamentoMedico.usuario.nome"></span></ion-label>                
+            </ion-item>
+            <ion-card button="true" class="stats-card">
+                <ion-card-header (click)="exibirDados('paciente')">
+                  <ion-row>
+                    <ion-col size="10" class="ion-text-center ion-no-padding ion-no-margin">
+                      <ion-card-title>Dados do Paciente</ion-card-title>
+                    </ion-col>
+                    <ion-col size="2" class="ion-text-right ion-no-margin ion-no-padding">
+                      <ion-button size="small" fill="clear" class="ion-no-padding">
+                        <ion-icon *ngIf="!exibeDadosPaciente" slot="icon-only" name="ios-arrow-down">
+                        </ion-icon>
+                        <ion-icon *ngIf="exibeDadosPaciente" slot="icon-only" name="ios-arrow-up">
+                        </ion-icon>                       
+                      </ion-button>
+                    </ion-col>
+                  </ion-row>                                 
+                </ion-card-header>
+                <ion-card-content class="ion-padding" *ngIf="exibeDadosPaciente">               
+                    <ion-item>
+                        <ion-label>Prestador:<br><span [innerHTML]="acompanhamentoMedico.prestador.nomePrestador"></span></ion-label>                
+                    </ion-item>        
+                    <ion-item>
+                        <ion-label>Nome do Paciente:<br><span [innerHTML]="acompanhamentoMedico.beneficiario.nomeBeneficiario"></span></ion-label>                
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>Número da Carteira do Paciente:<br><span [innerHTML]="acompanhamentoMedico.beneficiario.carteiraBeneficiario"></span></ion-label>                
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>Data de Nascimento:<br><span [innerHTML]="acompanhamentoMedico.beneficiario.dataNascimento"></span></ion-label>                
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>Idade:<br><span [innerHTML]="acompanhamentoMedico.beneficiario.idade"></span></ion-label>                
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>Sexo:<br><span [innerHTML]="acompanhamentoMedico.beneficiario.sexo"></span></ion-label>                
+                    </ion-item>                        
+                </ion-card-content>  
+            </ion-card>
+            <ion-card button="true" class="stats-card">
+                <ion-card-header (click)="exibirDados('autorizacao')">
+                  <ion-row>
+                    <ion-col size="10" class="ion-text-center ion-no-padding ion-no-margin">
+                      <ion-card-title>Dados da Autorização</ion-card-title>
+                    </ion-col>
+                    <ion-col size="2" class="ion-text-right ion-no-margin ion-no-padding">
+                      <ion-button size="small" fill="clear" class="ion-no-padding">
+                        <ion-icon *ngIf="!exibeDadosAutorizacao" slot="icon-only" name="ios-arrow-down">
+                        </ion-icon>
+                        <ion-icon *ngIf="exibeDadosAutorizacao" slot="icon-only" name="ios-arrow-up">
+                        </ion-icon>                      
+                      </ion-button>
+                    </ion-col>
+                  </ion-row>                                 
+                </ion-card-header>
+                <ion-card-content class="ion-padding" *ngIf="exibeDadosAutorizacao">            
+                    <ion-item>
+                        <ion-label>Senha de Autorização:<br><span [innerHTML]="acompanhamentoMedico.senhaAutorizacao.senha"></span></ion-label>                                        
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">Data da Internação:</ion-label>
+                        <ion-input readonly="true" clearInput (click)="abrirCalendarioDataInternacao($event)" formControlName="dataInternacao"></ion-input>
+                        <ion-icon *ngIf="!dataInternacao.disabled" name="close-circle-outline" slot="end" class="iconCalendar" (click)="limparDataInternacao()"></ion-icon>
+                        <ion-icon *ngIf="!dataInternacao.disabled" name="calendar" slot="end" class="iconCalendar" (click)="abrirCalendarioDataInternacao($event)"></ion-icon>
+                    </ion-item>
+                    <ion-item mode="md" lines="none" class="item-error" *ngIf="((dataInternacao.dirty || dataInternacao.touched) && dataInternacao.hasError('required')) || dataInternacao.hasError('incorrect') || flgErroDataInternacao">
+                        <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+                            <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+                        </ion-note>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">Hora da Internação:</ion-label>
+                        <ion-datetime presentation="time" displayFormat="h:mm A" formControlName="horaInternacao" cancelText="Cancelar" doneText="Confirmar" (ionChange)="atualizaCampos()"></ion-datetime> 
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">Justificativa da Internação:</ion-label>
+                        <ion-textarea class="textarea-margin-background" formControlName="justificativa" rows="6" cols="20" (ionBlur)="atualizaCampos()"></ion-textarea>                             
+                    </ion-item>
+                    <ion-item mode="md" lines="none" class="item-error" *ngIf="((justificativa.dirty || justificativa.touched) && justificativa.hasError('required')) || justificativa.hasError('incorrect') || flgErroJustificativa">
+                        <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+                            <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+                        </ion-note>
+                    </ion-item> 
+                </ion-card-content>    
+            </ion-card>
+            <ion-card button="true" class="stats-card">
+                <ion-card-header (click)="exibirDados('acompanhamento')">
+                  <ion-row>
+                    <ion-col size="10" class="ion-text-center ion-no-padding ion-no-margin">
+                      <ion-card-title>Dados do Acompanhamento</ion-card-title>
+                    </ion-col>
+                    <ion-col size="2" class="ion-text-right ion-no-margin ion-no-padding">
+                      <ion-button size="small" fill="clear" class="ion-no-padding">
+                        <ion-icon *ngIf="!exibeDadosAcompanhamento" slot="icon-only" name="ios-arrow-down">
+                        </ion-icon>
+                        <ion-icon *ngIf="exibeDadosAcompanhamento" slot="icon-only" name="ios-arrow-up">
+                        </ion-icon>                       
+                      </ion-button>
+                    </ion-col>
+                  </ion-row>                                 
+                </ion-card-header>
+                <ion-card-content class="ion-padding" *ngIf="exibeDadosAcompanhamento">
+                    <ion-item>
+                        <ion-label position="floating">Acomodação Inicial:</ion-label>
+                        <!--tem o ngIf no select para corrigir o bug que existe na tag e garantir q venha selecionado o vamor quando tiver-->
+                        <ion-select *ngIf="listaTipoAcomodacao && listaTipoAcomodacao.length" formControlName="tipoAcomodacao"  interface="action-sheet" placeholder="Selecione" cancelText="Cancelar" okText="Ok" (ionChange)="atualizaCampos()">
+                            <ion-select-option [value]="">Selecione</ion-select-option>
+                            <ion-select-option *ngFor="let acomodacao of listaTipoAcomodacao" [value]="acomodacao.seqDominio">{{ acomodacao.desDominio }}</ion-select-option>
+                        </ion-select>                
+                    </ion-item>
+                    <ion-item mode="md" lines="none" class="item-error" *ngIf="((tipoAcomodacao.dirty || tipoAcomodacao.touched) && tipoAcomodacao.hasError('required')) || tipoAcomodacao.hasError('incorrect') || flgErroAcomodacao">
+                        <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+                            <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+                        </ion-note>
+                    </ion-item>                        
+                    <ion-item>
+                        <ion-label position="floating">Tipo de Internação:</ion-label>
+                        <!--tem o ngIf no select para corrigir o bug que existe na tag e garantir q venha selecionado o vamor quando tiver-->
+                        <ion-select *ngIf="listaTipoInternacao && listaTipoInternacao.length" formControlName="tipoInternacao"  interface="action-sheet" placeholder="Selecione" cancelText="Cancelar" okText="Ok" (ionChange)="atualizaCampos()">
+                            <ion-select-option [value]="">Selecione</ion-select-option>
+                            <ion-select-option *ngFor="let internacao of listaTipoInternacao" [value]="internacao.seqDominio">{{ internacao.desDominio }}</ion-select-option>
+                        </ion-select>                
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">Caráter do Atendimento:</ion-label>
+                        <!--tem o ngIf no select para corrigir o bug que existe na tag e garantir q venha selecionado o vamor quando tiver-->
+                        <ion-select *ngIf="listaCaraterAtendimento && listaCaraterAtendimento.length" formControlName="caraterAtendimento"  interface="action-sheet" placeholder="Selecione" cancelText="Cancelar" okText="Ok" (ionChange)="atualizaCampos()">
+                            <ion-select-option [value]="">Selecione</ion-select-option>
+                            <ion-select-option *ngFor="let caraterAtend of listaCaraterAtendimento" [value]="caraterAtend.seqDominio">{{ caraterAtend.desDominio }}</ion-select-option>
+                        </ion-select>                
+                    </ion-item>         
+                    <ion-item>
+                        <ion-label position="floating">Origem da Internação Inicial:</ion-label>
+                        <!--tem o ngIf no select para corrigir o bug que existe na tag e garantir q venha selecionado o vamor quando tiver-->
+                        <ion-select *ngIf="listaOrigemInternacao && listaOrigemInternacao.length" formControlName="origemInternacao"  interface="action-sheet" placeholder="Selecione" cancelText="Cancelar" okText="Ok" (ionChange)="atualizaCampos()">
+                            <ion-select-option [value]="">Selecione</ion-select-option>
+                            <ion-select-option *ngFor="let oInternacao of listaOrigemInternacao" [value]="oInternacao.seqDominio">{{ oInternacao.desDominio }}</ion-select-option>
+                        </ion-select>                
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">Médico Assistente:</ion-label>
+                        <ion-input type="text" formControlName="medicoAssistente" inputmode="text" (ionBlur)="atualizaCampos()"></ion-input>               
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">CRM Médico Assistente:</ion-label>
+                        <ion-input type="text" pattern="[0-9]*" maxlength="10" inputmode="numeric" formControlName="crmMedicoAssistente" (ionBlur)="atualizaCampos()"></ion-input>               
+                    </ion-item>
+                    <ion-item mode="md" lines="none" class="item-error" *ngIf="crmMedicoAssistente.hasError('pattern')">            
+                        <ion-note color="warning" class="ion-padding-horizontal">Só são permitidos valores numéricos
+                            <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+                        </ion-note>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">CID de Diagnóstico:</ion-label>
+                        <ion-input type="text" maxlength="10" inputmode="text" formControlName="cidDiagnostico" (ionBlur)="atualizaCampos()"></ion-input>               
+                    </ion-item>          
+                    <ion-item>
+                        <ion-label position="floating">Data Estimada da Alta:</ion-label>
+                        <ion-input readonly="true" clearInput (click)="abrirCalendarioDataEstimadaAlta($event)" formControlName="dataEstimadaAlta"></ion-input>
+                        <ion-icon *ngIf="!dataEstimadaAlta.disabled" name="close-circle-outline" slot="end" class="iconCalendar" (click)="limparDataEstimadaAlta()"></ion-icon>
+                        <ion-icon *ngIf="!dataEstimadaAlta.disabled" name="calendar" slot="end" class="iconCalendar" (click)="abrirCalendarioDataEstimadaAlta($event)"></ion-icon>
+                    </ion-item>                   
+                    <ion-item>
+                        <ion-label position="floating">Observação:</ion-label>
+                        <ion-textarea class="textarea-margin-background" formControlName="observacao" rows="6" cols="20" (ionBlur)="atualizaCampos()"></ion-textarea>               
+                    </ion-item>
+                </ion-card-content>
+            </ion-card>
+
+
+            <ion-card button="true" class="stats-card" *ngIf="acompanhamentoMedico.ultimaInternacao.senha != null">
+                <ion-card-header (click)="exibirDados('ultimaInternacao')">
+                  <ion-row>
+                    <ion-col size="10" class="ion-text-center ion-no-padding ion-no-margin">
+                      <ion-card-title>Última Internação</ion-card-title>
+                    </ion-col>
+                    <ion-col size="2" class="ion-text-right ion-no-margin ion-no-padding">
+                      <ion-button size="small" fill="clear" class="ion-no-padding">
+                        <ion-icon *ngIf="!exibeDadosUltimaInternacao" slot="icon-only" name="ios-arrow-down">
+                        </ion-icon>
+                        <ion-icon *ngIf="exibeDadosUltimaInternacao" slot="icon-only" name="ios-arrow-up">
+                        </ion-icon>                        
+                      </ion-button>
+                    </ion-col>
+                  </ion-row>                                 
+                </ion-card-header>
+                <ion-card-content class="ion-padding" *ngIf="exibeDadosUltimaInternacao">
+                    <ion-item>
+                        <ion-label>Senha:<br><span [innerHTML]="acompanhamentoMedico.ultimaInternacao.senha"></span></ion-label> 
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>Período Internação:<br><span [innerHTML]="acompanhamentoMedico.ultimaInternacao.dataAutorizacaoInicial"></span> a <span [innerHTML]="acompanhamentoMedico.ultimaInternacao.dataAutorizacaoFinal"></span></ion-label> 
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>Prestador:<br><span [innerHTML]="acompanhamentoMedico.ultimaInternacao.prestador.concatCodNomePrestador"></span></ion-label> 
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">Motivo:</ion-label> 
+                        <ion-textarea class="textarea-margin-background" [innerHTML]="acompanhamentoMedico.ultimaInternacao.justificativaInternacao" rows="6" cols="20" readonly></ion-textarea>
+                    </ion-item>
+                </ion-card-content>
+            </ion-card>
+        </ion-list>
+        <ion-list *ngIf="opcaoExibir == 'acompanhamento'">
+            <ion-item>
+                <ion-label position="floating">Dia Acompanhamento:</ion-label>
+                <ion-input readonly="true" clearInput (click)="abrirCalendarioDiaAcompanhamento($event)" formControlName="diaAcompanhamento"></ion-input>
+                <ion-icon *ngIf="!diaAcompanhamento.disabled" name="calendar" slot="end" class="iconCalendar" (click)="abrirCalendarioDiaAcompanhamento($event)"></ion-icon>
+            </ion-item>
+            <ion-item mode="md" lines="none" class="item-error" *ngIf="((diaAcompanhamento.dirty || diaAcompanhamento.touched) && diaAcompanhamento.hasError('required')) || diaAcompanhamento.hasError('incorrect')">
+                <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+                    <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+                </ion-note>
+            </ion-item>                    
+            <ion-item>
+                <ion-label>Copiar Último Dia:</ion-label> 
+                <ion-checkbox slot="start" formControlName="flgCopiaUltimoDia"></ion-checkbox>
+            </ion-item>  
+            <ion-item>
+                <ion-button expand="block" size="default" (click)="adicionarDiaAcompanhamento()" [disabled]="acompanhamentoMedico.status === 'ENCERRADO'">Adicionar</ion-button>
+            </ion-item> 
+            <ion-item *ngIf="opcaoExibir == 'acompanhamento' && listaDiasAcompanhamento.length > 0">
+                <ion-label>Dias de Acompanhamento</ion-label> 
+            </ion-item>           
+        </ion-list>
+        <ion-card *ngIf="listaDiasAcompanhamento.length > 0 && opcaoExibir == 'acompanhamento'" class="ion-no-margin">
+            <ion-card-header class="ion-margin-bottom">
+              <ion-card-title class="ion-text-center">Dias de Acompanhamento</ion-card-title>              
+            </ion-card-header>
+            <ion-item-sliding *ngFor = "let acompanhamentoDia of listaDiasAcompanhamento; let i=index">
+                <ion-item (click)="abrirTelaDiaAcompanhamento(acompanhamentoDia)">
+                    <ion-row>
+                        <ion-col size="12">
+                          <span class="texto-card-text" [innerHTML]="acompanhamentoDia.diaAcompanhamento"></span> - 
+                          <span class="texto-card-text" [innerHTML]="acompanhamentoDia.diaSemanaAcompanhamento"></span>
+                          <br>
+                          <span class="texto-card-label">Sincronismo: </span><span class="texto-card-text" [innerHTML]="acompanhamentoDia.statusSincronismo"></span>
+                          <br>
+                          <ion-note color="warning" *ngIf="!verificaDiasCamposObrigatorios(acompanhamentoDia)">Campo(s) Obrigatório(s) não preenchido(s)
+                            <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+                          </ion-note>
+                        </ion-col>
+                    </ion-row>                    
+                </ion-item>
+                <ion-item-options>
+                    <ion-button expand="block" (click)="apagarDiaAcompanhamento(i)" [disabled]="acompanhamentoMedico.status === 'ENCERRADO'">
+                        <ion-icon name="trash"></ion-icon>Excluir
+                    </ion-button>
+                </ion-item-options>
+            </ion-item-sliding>
+        </ion-card>
+        <ion-list *ngIf="opcaoExibir == 'alta'">
+            <ion-item>
+                <ion-label position="floating">Data da Alta:</ion-label>
+                <ion-input readonly="true" clearInput (click)="abrirCalendarioDataAlta($event)" formControlName="dataAlta"></ion-input>
+                <ion-icon *ngIf="!dataAlta.disabled" name="close-circle-outline" slot="end" class="iconCalendar" (click)="limparDataAlta()"></ion-icon>
+                <ion-icon *ngIf="!dataAlta.disabled" name="calendar" slot="end" class="iconCalendar" (click)="abrirCalendarioDataAlta($event)"></ion-icon>
+            </ion-item>           
+            <ion-item>
+                <ion-label position="floating">Motivo da Alta:</ion-label>
+                <!--tem o ngIf no select para corrigir o bug que existe na tag e garantir q venha selecionado o vamor quando tiver-->
+                <ion-select *ngIf="listaMotivosAlta && listaMotivosAlta.length" formControlName="motivoAlta"  interface="action-sheet" placeholder="Selecione" cancelText="Cancelar" okText="Ok" (ionChange)="atualizaCampos()">
+                    <ion-select-option [value]="">Selecione</ion-select-option>
+                    <ion-select-option *ngFor="let motivo of listaMotivosAlta" [value]="motivo.seqDominio">{{ motivo.desDominio }}</ion-select-option>
+                </ion-select>                
+            </ion-item>
+            <ion-row>
+                <ion-col size="12" class="ion-text-center">
+                    <ion-button id="btnEncerrarAuditoria" expand="block" size="large" [disabled]="!formAcompanhamento.valid || acompanhamentoMedico.status === 'ENCERRADO' || listaDiasAcompanhamento.length === 0" (click)="encerrarAuditoria()">Encerrar Auditoria</ion-button>
+                </ion-col>
+            </ion-row>
+        </ion-list>     
+    </form>    
+</ion-content>  

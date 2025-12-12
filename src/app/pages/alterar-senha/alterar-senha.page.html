@@ -1,0 +1,108 @@
+<ion-header>
+  <ion-toolbar class="ion-text-center">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/menu-principal" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-menu-button menuId="main-content"></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="ion-text-uppercase">Alterar Senha</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-grid class="ion-no-padding" fixed>
+    <ion-row class="ion-margin ion-align-items-center ion-justify-content-center">
+      <ion-col size-sm="8" size-md="8" size-lg="6" size-xl="6" class="ion-no-padding ion-text-center ion-no-margin">
+        <form [formGroup]="formAlterarSenha" (submit)="alterarSenha()">
+
+          <ion-item>
+            <ion-icon slot="start" name="lock" color="primary"></ion-icon>
+            <ion-label position="floating">Senha Atual</ion-label>
+            <ion-input type="{{passwordType}}" formControlName="senhaAtual" enterkeyhint="next"
+              (keyup.enter)="toFieldNovaSenha(inputNovaSenha)"></ion-input>
+            <ion-icon slot="end" name="{{iconPassword}}" [ngStyle]="{'color': btnColorPassword}"
+              (mousedown)="$event.preventDefault(); showHidePassword('senhaAtual')" #inputSenhaAtual>
+            </ion-icon>
+          </ion-item>
+          <ion-item mode="md" lines="none" class="item-error">
+            <ion-note color="warning" class="ion-padding-horizontal"
+              *ngIf="(senhaAtual.dirty || senhaAtual.touched) && senhaAtual.hasError('required')">Campo obrigatório
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+            <ion-note color="warning" class="ion-padding-horizontal"
+              *ngIf="(senhaAtual.dirty || senhaAtual.touched) && senhaAtual.hasError('minlength')">Min 4 caracteres
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+            <ion-note color="warning" class="ion-padding-horizontal"
+              *ngIf="(senhaAtual.dirty || senhaAtual.touched) && senhaAtual.hasError('maxlength')">Max 28 caracteres
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+          </ion-item>
+
+          <ion-item>
+            <ion-icon slot="start" name="lock" color="primary"></ion-icon>
+            <ion-label position="floating">Nova Senha</ion-label>
+            <ion-input type="{{newPasswordType}}" formControlName="novaSenha" enterkeyhint="next"
+              (keyup.enter)="toFieldRepetirNovaSenha(inputRepetirNovaSenha)" #inputNovaSenha></ion-input>
+            <ion-icon slot="end" name="{{iconNewPassword}}" [ngStyle]="{'color': btnColorNewPassword}"
+              (mousedown)="$event.preventDefault(); showHidePassword('novaSenha')">
+            </ion-icon>
+          </ion-item>
+          <ion-item mode="md" lines="none" class="item-error">
+            <ion-note color="warning" class="ion-padding-horizontal"
+              *ngIf="(novaSenha.dirty || novaSenha.touched) && novaSenha.hasError('required')">Campo obrigatório
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+            <ion-note color="warning" class="ion-padding-horizontal"
+              *ngIf="(novaSenha.dirty || novaSenha.touched) && novaSenha.hasError('minlength')">Min 4 caracteres
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+            <ion-note color="warning" class="ion-padding-horizontal"
+              *ngIf="(novaSenha.dirty || novaSenha.touched) && novaSenha.hasError('maxlength')">Max 28 caracteres
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+          </ion-item>
+
+          <ion-item>
+            <ion-icon slot="start" name="lock" color="primary"></ion-icon>
+            <ion-label position="floating">Confirme a Nova Senha</ion-label>
+            <ion-input type="{{confirmNewPasswordType}}" formControlName="confirmarNovaSenha" enterkeyhint="go"
+              (keyup.enter)="alterarSenha()" #inputRepetirNovaSenha>
+            </ion-input>
+            <ion-icon slot="end" name="{{iconConfirmNewPassword}}" [ngStyle]="{'color': btnColorConfirmNewPassword}"
+              (mousedown)="$event.preventDefault(); showHidePassword('confirmarNovaSenha')">
+            </ion-icon>
+          </ion-item>
+          <ion-item mode="md" lines="none" class="item-error">
+            <ion-note color="warning" class="ion-padding-horizontal"
+              *ngIf="(confirmarNovaSenha.dirty || confirmarNovaSenha.touched) && confirmarNovaSenha.hasError('required')">
+              Campo
+              obrigatório
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+            <ion-note color="warning" class="ion-padding-horizontal"
+              *ngIf="(confirmarNovaSenha.dirty || confirmarNovaSenha.touched) && confirmarNovaSenha.hasError('minlength')">
+              Min 4
+              caracteres
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+            <ion-note color="warning"
+              *ngIf="(confirmarNovaSenha.dirty || confirmarNovaSenha.touched) && confirmarNovaSenha.hasError('maxlength')">
+              Max
+              28
+              caracteres
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+            <ion-note color="warning" class="ion-padding-horizontal"
+              *ngIf="confirmarNovaSenha.dirty && confirmarNovaSenha.hasError('compare')">
+              As senhas não coincidem
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+          </ion-item>
+
+          <ion-button class="ion-margin-top" type="submit" expand="block" size="large"
+            [disabled]="!formAlterarSenha.valid">
+            ALTERAR
+          </ion-button>
+        </form>

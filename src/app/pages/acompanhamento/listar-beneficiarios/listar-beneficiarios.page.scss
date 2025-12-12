@@ -1,0 +1,37 @@
+ion-card-header {
+    padding: 0px;
+}
+
+.card-conteudo {
+    padding: 8px;
+}
+
+.texto-card-label {
+    font-size: 12px;
+    color: var(--ion-color-primary);
+    font-weight: bold;
+}
+
+.texto-card-text {
+    font-size: 11px;
+    color: var(--ion-color-primary);    
+}
+
+.texto-card-text-red {
+    font-size: 11px;
+    color: var(--ion-color-danger);
+    font-weight: bold;   
+}
+
+.alert-message.sc-ion-alert-md {
+    font-size: 14px;
+}
+
+.sc-ion-card-ios-h{
+    margin-top:4px;
+}
+
+.list-ios{
+    margin-top:0px;
+    margin-bottom:0px; 
+}

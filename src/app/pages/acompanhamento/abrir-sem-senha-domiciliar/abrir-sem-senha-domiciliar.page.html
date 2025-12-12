@@ -1,0 +1,78 @@
+<ion-header>
+    <ion-toolbar class="ion-text-center">
+        <ion-buttons slot="start">
+        <ion-back-button defaultHref="/menu-principal" text=""></ion-back-button>
+        </ion-buttons>
+        <ion-title class="ion-text-uppercase">Abrir Acompanhamento</ion-title>
+        <ion-buttons slot="end">
+        <ion-menu-button menuId="main-content"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <form [formGroup]="formAbrirSemSenhaDomiciliar">    
+      <ion-card>
+        <ion-item>
+          <ion-label position="floating">Perfil Formulário</ion-label>
+            <ion-select formControlName="perfilFormulario" interface="action-sheet" placeholder="Selecione" cancelText="Cancelar" okText="Ok" (ionChange)="alteraPerfilFormulario()" (ionFocus)="usuarioComecouAlterarPerfil = true">
+              <ion-select-option *ngFor="let perfil of listaPerfisFormulario" [value]="perfil.idConfigFormulario">{{ perfil.nomeConfigFormulario }}</ion-select-option>
+            </ion-select>      
+        </ion-item> 
+      </ion-card>
+      <ion-card>            
+        <ion-item>
+          <ion-label position="floating">Prestador</ion-label>
+          <ng-container *ngIf="listaPrestadores.length == 0">
+            <ion-input type="text" inputmode="text" formControlName="filtroPrestador" inputmode="text"></ion-input>             
+          </ng-container>
+          <ng-container *ngIf="listaPrestadores.length > 0">
+            <ion-select formControlName="prestador" interface="action-sheet" placeholder="Selecione" cancelText="Cancelar" (ionChange)="exibirFiltros()">
+              <ion-select-option *ngFor="let prestador of listaPrestadores" [value]="prestador.idPrestador">{{ prestador.nomePrestador }}</ion-select-option>
+            </ion-select>               
+          </ng-container>          
+        </ion-item>
+        <ion-item mode="md" lines="none" class="item-error" *ngIf="(prestador.dirty || prestador.touched) && prestador.hasError('required')">
+          <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+            <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+          </ion-note>
+        </ion-item>
+        <ion-row>
+          <ion-col size="12" class="ion-text-center">
+            <ng-container *ngIf="listaPrestadores.length == 0">
+              <ion-button expand="block" size="large" (click)="buscarPrestador()" [disabled]="filtroPrestador.invalid">Buscar</ion-button>
+            </ng-container> 
+            <ng-container *ngIf="listaPrestadores.length > 0">
+              <ion-button expand="block" size="large" (click)="limparBuscarPrestador()">Nova Busca</ion-button>
+            </ng-container> 
+          </ion-col>
+        </ion-row>
+      </ion-card>
+      <ion-card *ngIf="showFiltros">        
+        <ion-item>
+          <ion-label position="floating">Nome do Paciente</ion-label>
+          <ion-input type="text" inputmode="text" formControlName="nomeBeneficiario" inputmode="text"></ion-input>
+        </ion-item>
+        <ion-item mode="md" lines="none" class="item-error" *ngIf="((nomeBeneficiario.dirty || nomeBeneficiario.touched) && nomeBeneficiario.hasError('required')) || nomeBeneficiario.hasError('incorrect')">
+          <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+            <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+          </ion-note>
+        </ion-item>                   
+        <ion-item>
+          <ion-label position="floating">Número da Carteira do Paciente</ion-label>
+          <ion-input type="text" inputmode="text" formControlName="carteiraBeneficiario" inputmode="text"></ion-input>
+        </ion-item>
+        <ion-item mode="md" lines="none" class="item-error" *ngIf="((carteiraBeneficiario.dirty || carteiraBeneficiario.touched) && carteiraBeneficiario.hasError('required')) || carteiraBeneficiario.hasError('incorrect')">
+          <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+            <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+          </ion-note>
+        </ion-item> 
+        <ion-row>
+          <ion-col size="12" class="ion-text-center">
+            <ion-button (click)="buscarSegurado()" [disabled]="false" expand="block" size="large">
+              Buscar
+            </ion-button>  
+          </ion-col>
+        </ion-row>               
+      </ion-card>
+    </form>
+</ion-content>      

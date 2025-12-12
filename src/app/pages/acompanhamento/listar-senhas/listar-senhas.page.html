@@ -1,0 +1,49 @@
+<ion-header>
+    <ion-toolbar class="ion-text-center">
+        <ion-buttons slot="start">
+        <ion-back-button defaultHref="/menu-principal" text=""></ion-back-button>
+        </ion-buttons>
+        <ion-title class="ion-text-uppercase">Abrir Acompanhamento</ion-title>
+        <ion-buttons slot="end">
+        <ion-menu-button menuId="main-content"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>   
+</ion-header>
+<ion-content>
+  <ion-searchbar [(ngModel)]="filtroSenha" (keyup)="filtrarSenha($event)" (ionCancel)="cancelaFiltroSenha()" (ionClear)="cancelaFiltroSenha()" cancelButtonText="Cancelar" placeholder="Beneficiário, Senha ou Internação" [debounce]="250" inputmode="text" type="text" enterkeyhint="search" animated #searchInput></ion-searchbar> 
+  <ion-list *ngFor="let senhaAutorizacao of listaSenhasFiltradas">
+    <ion-card>
+      <ion-card-header>
+        <ion-row (click)="selecionarSenha(senhaAutorizacao)">        
+          <ion-col size="10">
+              <ion-card-title>Senha: <span [innerHTML]="senhaAutorizacao.senha"></span></ion-card-title>
+          </ion-col>
+          <ion-col size="2">
+              <ion-button size="small" fill="clear">
+                  <ion-icon slot="icon-only" name="ios-arrow-forward"></ion-icon>               
+              </ion-button>                
+          </ion-col>            
+        </ion-row>
+      </ion-card-header>
+      <ion-card-content class="card-conteudo">      
+        <ion-row>
+          <ion-col>
+            <span class="texto-card-label">Beneficiário: </span><span class="texto-card-text" [innerHTML]="senhaAutorizacao.beneficiario.nomeBeneficiario"></span>
+            <br>
+            <span class="texto-card-label">Carteira: </span><span class="texto-card-text" [innerHTML]="senhaAutorizacao.beneficiario.carteiraBeneficiario"></span>
+            <br>
+            <span class="texto-card-label">Data de Nascimento: </span><span class="texto-card-text" [innerHTML]="senhaAutorizacao.beneficiario.dataNascimento"></span>
+            <br>
+            <span class="texto-card-label">Data da Autorização: </span><span class="texto-card-text" [innerHTML]="senhaAutorizacao.dataAutorizacao"></span>
+            <br>
+            <span class="texto-card-label">Data de Internação: </span><span [ngClass]="{'texto-card-text-red': senhaAutorizacao.diasInternacao > 10, 'texto-card-text': senhaAutorizacao.diasInternacao <= 10}" [innerHTML]="senhaAutorizacao.dataInternacao"></span>
+            <br>
+            <span class="texto-card-label">Dias Internado: </span><span [ngClass]="{'texto-card-text-red': senhaAutorizacao.diasInternacao > 10, 'texto-card-text': senhaAutorizacao.diasInternacao <= 10}" [innerHTML]="senhaAutorizacao.diasInternacao"></span>
+          </ion-col>             
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+</ion-content>  
+
+  

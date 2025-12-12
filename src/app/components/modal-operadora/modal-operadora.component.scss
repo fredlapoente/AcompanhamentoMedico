@@ -1,0 +1,19 @@
+.close{
+  --background: var(--ion-color-primary);
+  --color: var(--ion-color-primary-contrast);    
+}
+
+p {
+  padding: 0 40px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ion-color-primary);
+}
+
+ion-item {
+  ion-button{
+      ion-icon{
+          color: var(--ion-color-primary-contrast);
+      }
+  } 
+}

@@ -1,0 +1,158 @@
+<ion-list>
+  <div [formGroup]="form">
+    <div [ngSwitch]="dado.tipoDado">
+
+      <div *ngSwitchCase="'TEXTO LIVRE'">
+        <ion-item *ngIf="dado.tamanhoCampo <= 50">
+          <ion-label position="stacked" [attr.for]="dado.desDado">{{dado.desDado}}</ion-label>
+          <ion-input clear-input="true" [formControlName]="dado.idDadoItemGrupoConfigFormularioModel" [id]="dado.idDadoItemGrupoConfigFormularioModel"></ion-input>
+        </ion-item>
+        <ion-item *ngIf="dado.tamanhoCampo > 50">
+          <ion-label position="stacked" [attr.for]="dado.desDado">{{dado.desDado}}</ion-label>
+          <ion-textarea autoGrow="true" (ionChange)="ajustaTexto()" [formControlName]="dado.idDadoItemGrupoConfigFormularioModel" [id]="dado.idDadoItemGrupoConfigFormularioModel" rows="3"></ion-textarea>
+        </ion-item>  
+        <ion-item mode="md" lines="none" class="item-error" *ngIf="isRequiredValid">
+          <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+          </ion-note>                   
+        </ion-item>
+        <ion-item mode="md" lines="none" class="item-error" *ngIf="isMaxLengthValid">
+          <ion-note color="warning" class="ion-padding-horizontal">Tamanho maior que o permitido: {{dado.tamanhoCampo}}
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+          </ion-note>                   
+        </ion-item>
+        <ion-item mode="md" lines="none" class="item-error" *ngIf="isValorValid">
+          <ion-note color="warning" class="ion-padding-horizontal">Valor inválido. Valores válidos: {{dado.valorValido}}
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+          </ion-note>                   
+        </ion-item>
+      </div>
+
+      <div *ngSwitchCase="'SELEÇÃO UNICA'">
+        <ion-item>          
+          <ion-label position="floating" [attr.for]="dado.idDadoItemGrupoConfigFormularioModel">{{dado.desDado}}</ion-label>
+          <ion-select placeholder="Selecione" [id]="dado.idDadoItemGrupoConfigFormularioModel" [formControlName]="dado.idDadoItemGrupoConfigFormularioModel" interface="action-sheet" cancelText="Cancelar" okTxt="Selecionar">
+            <ion-select-option *ngFor="let opt of dado.listaValor" [value]="opt">{{opt}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item mode="md" lines="none" class="item-error" *ngIf="isRequiredValid">
+          <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+          </ion-note>
+        </ion-item>
+      </div>
+
+      <div *ngSwitchCase="'SELEÇÃO MULTIPLA'">
+        <ion-item>          
+          <ion-label position="floating" [attr.for]="dado.idDadoItemGrupoConfigFormularioModel">{{dado.desDado}}</ion-label>
+          <ion-select multiple="true" placeholder="Selecione" [id]="dado.idDadoItemGrupoConfigFormularioModel" [formControlName]="dado.idDadoItemGrupoConfigFormularioModel" interface="action-sheet" cancelText="Cancelar" okTxt="Selecionar">
+            <ion-select-option *ngFor="let opt of dado.listaValor" [value]="opt">{{opt}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item mode="md" lines="none" class="item-error" *ngIf="isRequiredValid">
+          <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+          </ion-note>
+        </ion-item>
+      </div>
+
+      <div *ngSwitchCase="'SIM OU NÃO'">
+        <ion-item>
+          <ion-label [attr.for]="dado.idDadoItemGrupoConfigFormularioModel">{{dado.desDado}}</ion-label>
+          <ion-checkbox slot="start" [formControlName]="dado.idDadoItemGrupoConfigFormularioModel"></ion-checkbox>
+        </ion-item>
+        <ion-item mode="md" lines="none" class="item-error" *ngIf="isRequiredValid">
+          <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+          </ion-note>
+        </ion-item>
+      </div>
+      
+      <div *ngSwitchCase="'LIVRE ESCOLHA'">
+        <div>          
+           <ion-item>
+            <ion-label position="floating" [attr.for]="dado.idDadoItemGrupoConfigFormularioModel">{{dado.desDado}}</ion-label>
+            <ion-icon class="posicao-icone" name="add-circle" slot="end" (click)="novoItem($event)" *ngIf="statusAcompanhamento !== 'ENCERRADO'"></ion-icon>
+            <ion-input clear-input="true" [formControlName]="dado.idDadoItemGrupoConfigFormularioModel" [id]="dado.idDadoItemGrupoConfigFormularioModel" (keyup)="filtrarItem($event)" [debounce]="250" inputmode="text" type="text"></ion-input>
+          </ion-item>
+          <ion-item mode="md" lines="none" class="item-error" *ngIf="isRequiredValid">
+            <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+                <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+          </ion-item>                 
+          <div *ngIf="listaItemFiltrada.length > 0">
+            <ion-list>
+              <ion-item *ngFor="let result of listaItemFiltrada" (click)="selecionaItem(result)">
+                {{result.codItem}} - {{result.desItem}}
+              </ion-item>
+            </ion-list>            
+          </div>         
+          <ion-item *ngIf="dado.tipoItem == 'MEDICAMENTO'">          
+            <ion-label position="floating">HORÁRIOS</ion-label>
+            <ion-select formControlName="horario" interface="action-sheet" placeholder="Selecione" cancelText="Cancelar" okTxt="Selecionar" (ionChange)="exibirCampoOutroHorario()">
+              <ion-select-option *ngFor="let horarios of horariosMedicamento" [value]="horarios.codDominio">{{horarios.desDominio}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item *ngIf="exibeCampoOutroHorario && dado.tipoItem == 'MEDICAMENTO'">
+            <ion-label position="floating">HORÁRIO</ion-label>
+            <ion-input type="text" inputmode="text" formControlName="outroHorario" inputmode="text"></ion-input>
+          </ion-item>         
+          <ion-item mode="md" lines="none" class="item-error" *ngIf="dado.tipoItem == 'MEDICAMENTO' && ((outroHorario.dirty || outroHorario.touched) && outroHorario.hasError('required'))">
+            <ion-note color="warning" class="ion-padding-horizontal">Campo obrigatório
+                <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+          </ion-item> 
+          <ion-row>
+            <ion-col size="12" class="ion-text-center">
+              <ion-button expand="block" size="large" (click)="adicionarItem()" [disabled]="statusAcompanhamento === 'ENCERRADO'">Adicionar {{dado.tipoItem}}</ion-button>  
+            </ion-col>
+          </ion-row>
+          <ion-grid *ngIf="dado.listaItens.length > 0">
+            <div *ngIf="dado.tipoItem == 'MEDICAMENTO'">
+              <ion-row class="cabecalho-tabela"> 
+                <ion-col size="8" class="col-tabela">
+                  {{dado.tipoItem}}
+                </ion-col>
+                <ion-col size="3" class="col-tabela" >
+                  Horário
+                </ion-col>
+                <ion-col size="1" class="col-tabela">                  
+                </ion-col>
+              </ion-row>
+              <ion-row *ngFor="let itens of dado.listaItens; let i=index">
+                <ion-col size="8" class="col-tabela text-col-tabela-left">
+                  {{itens.concatCodDesItemRed}}
+                </ion-col>
+                <ion-col size="3" class="col-tabela text-col-tabela-center">
+                  {{itens.posologia}}
+                </ion-col>
+                <ion-col size="1" class="col-tabela text-col-tabela-center" *ngIf="statusAcompanhamento !== 'ENCERRADO'">
+                  <ion-icon name="trash" (click)="apagarItemLista(i)"></ion-icon>                                  
+                </ion-col>
+              </ion-row>
+            </div>
+
+            <div *ngIf="dado.tipoItem != 'MEDICAMENTO'">
+              <ion-row class="cabecalho-tabela" > 
+                <ion-col size="11" class="col-tabela">
+                  {{dado.tipoItem}}
+                </ion-col>              
+                <ion-col size="1" class="col-tabela">                  
+                </ion-col>
+              </ion-row>           
+              <ion-row *ngFor="let itens of dado.listaItens; let i=index">
+                <ion-col size="11" class="col-tabela text-col-tabela-left">
+                  {{itens.concatCodDesItemRed}}
+                </ion-col>             
+                <ion-col size="1" class="col-tabela text-col-tabela-center" *ngIf="statusAcompanhamento !== 'ENCERRADO'">
+                  <ion-icon name="trash" (click)="apagarItemLista(i)"></ion-icon>                
+                </ion-col>
+              </ion-row>
+            </div>           
+          </ion-grid>     
+        </div>
+      </div>
+
+    </div>    
+  </div>
+</ion-list>

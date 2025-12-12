@@ -1,0 +1,16 @@
+<ion-card class="ion-no-padding ion-no-margin background">
+  <ion-card-header color="transparent" class="ion-no-padding ion-padding-top">
+    <div class="center-content-user-initials ion-text-center">
+      <div *ngIf="userInitials" class="user-init ion-text-center ion-text-uppercase">{{ userInitials || ""}}</div>
+    </div>
+    <ion-row>
+      <ion-col size="12" class="ion-padding-start">
+        <ion-card-subtitle>{{ greeting }}, </ion-card-subtitle>
+        <ion-card-title *ngIf="usuario">{{ usuario.nome }}</ion-card-title>
+      </ion-col>
+    </ion-row>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-label *ngIf="usuario">{{ usuario.operadora.nomeOperadora }}</ion-label>
+  </ion-card-content>
+</ion-card>

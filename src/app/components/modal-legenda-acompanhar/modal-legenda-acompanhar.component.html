@@ -1,0 +1,30 @@
+<ion-content fullscreen scroll-y="false">
+    <ion-item class="close" lines="none">
+      <ion-title>Legenda</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="fecharModal()" fill="clear" class="button-modal">
+          <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>                 
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+            <ion-icon name="square" class="imagem-indicador-verde"></ion-icon> - 
+            <span class="texto-card-label">Indica que o acompanhamento foi visualizado na data corrente.</span>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+            <ion-icon name="square" class="imagem-indicador-vermelho"></ion-icon> - 
+            <span class="texto-card-label">Indica que o acompanhamento possui data de alta, mas não teve a auditoria encerrada.</span>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+            <ion-icon name="square" class="imagem-indicador-cinza"></ion-icon> - 
+            <span class="texto-card-label">Na primeira posição indica que o acompanhamento não foi visualizado na data corrente. Na segunda posição indica que ainda não teve alta.</span>         
+         </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-content>

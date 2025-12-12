@@ -1,0 +1,56 @@
+workflows:
+  ios-cordova-signed:
+    name: Build iOS Cordova (Assinatura Automática)
+
+    environment:
+      node: 14.20.0
+      xcode: 16.1
+      vars:
+        CORDOVA_IOS_VERSION: "6.2.0"
+
+    scripts:
+      - name: Instalar Cordova e dependências
+        script: |
+          npm install -g npm@6.14.17
+          npm install -g cordova@11.1.0
+          npm install
+
+      - name: Remover plataforma Android
+        script: |
+          cordova platform remove android || true
+
+      - name: Preparar plataforma iOS
+        script: |
+          cordova platform remove ios || true
+          cordova platform add ios@${CORDOVA_IOS_VERSION}
+          cordova prepare ios
+
+      - name: Ajustar permissões do fix_signing.sh
+        script: |
+          chmod +x fix_signing.sh
+
+      - name: DEBUG ANTES do patch (ver tudo)
+        script: |
+          echo "========== DEBUG ANTES =========="
+          grep -R "CODE_SIGN" -n platforms/ios || echo "Nenhum CODE_SIGN encontrado"
+          grep -R "iPhone Distribution" -n platforms/ios || echo "Nenhum iPhone Distribution encontrado"
+          grep -R "DEVELOPMENT_TEAM" -n platforms/ios || echo "Nenhum DEVELOPMENT_TEAM encontrado"
+
+      - name: Aplicar patch de assinatura
+        script: |
+          ./fix_signing.sh
+
+      - name: DEBUG DEPOIS do patch
+        script: |
+          echo "========== DEBUG DEPOIS =========="
+          grep -R "CODE_SIGN" -n platforms/ios || echo "Nenhum CODE_SIGN encontrado"
+          grep -R "iPhone Distribution" -n platforms/ios || echo "Nenhum iPhone Distribution encontrado"
+          grep -R "DEVELOPMENT_TEAM" -n platforms/ios || echo "Nenhum DEVELOPMENT_TEAM encontrado"
+
+      - name: Build iOS com assinatura automática
+        script: |
+          cordova build ios --release --device --buildConfig=build.json -- --allowProvisioningUpdates
+
+    artifacts:
+      - platforms/ios/build/device/*.ipa
+      - platforms/ios/build/**/*.xcarchive

@@ -1,0 +1,78 @@
+ion-item {
+    --background: transparent;
+    --color: var(--ion-color-dark-contrast);
+    --border-color: #BFDFDF;
+    font-size: 16px;
+}
+
+ion-content {
+  --background: var(--ion-color-primary);
+}
+
+ion-slides {
+    height: 100%;
+    --bullet-background: #E4F1F1;
+    --bullet-background-active: #f4f5f8;
+  }
+
+  ion-icon {
+    color: var(--ion-color-primary);
+  }
+
+  h2 {
+    color: var(--ion-color-secondary);
+  }
+
+  h3 {
+    color: var(--ion-color-light);
+  }
+
+  b {
+    font-weight: 500;
+  }
+
+  p {
+    padding: 0 40px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #E4F1F1;
+  }
+
+.select-full-width {
+    max-width: 100%;
+    width: 100%;
+    padding-left: 0;
+  }
+
+.login-toolbar {
+    border-bottom: 2px #E4F1F1 solid;
+}
+
+.title-operadora {
+  font-size: 18px;
+  color: #E4F1F1;
+}
+
+.login-image-header {
+    margin: .6em auto .2em;
+    width: 40vh;
+    max-width: 40vh;
+}
+
+.login-image-footer {
+    margin: 0 auto .2em;
+    width: 20vh;
+    max-width: 20vh;
+}
+
+.label-floating {
+  color: var(--ion-color-primary-contrast) !important;
+}
+
+@media (min-width: 1024px) and (max-width: 1366px) {
+    .login-image-header {
+        width: 30vh;
+        max-width: 30vh;
+    }
+}
+   

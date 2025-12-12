@@ -1,0 +1,60 @@
+<ion-header no-border>
+  <ion-toolbar color="secondary" class="ion-text-center ion-padding login-toolbar">
+    <ion-img class="login-image-header" src="../assets/images/logo-acomp.png"></ion-img>
+  </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-item lines="none">
+      <ion-icon color="light" slot="end" name="information-circle-outline" (click)="abrirModalOperadora()"></ion-icon>
+    </ion-item>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-no-padding">
+  <ion-grid class="height-100" fixed>
+    <ion-row class="height-100 ion-align-items-center ion-justify-content-center">
+      <ion-col size-sm="8" size-md="8" size-lg="6" size-xl="6" class="ion-no-padding ion-text-center ion-no-margin">
+        <form [formGroup]="formOperadora" (submit)="buscarOperadora()" (keyup.enter)="buscarOperadora()">
+          <ion-item>
+            <!-- <ion-icon slot="start" name="medical" color="light"></ion-icon> -->
+            <ion-label position="floating">Código da Operadora</ion-label>
+            <ion-input type="text" pattern="[0-9]*" maxlength="6" inputmode="numeric" formControlName="codOperadora">
+            </ion-input>
+            <ion-button class="ion-margin-bottom custom-button" slot="end" expand="block" size="default" type="submit"
+              [disabled]="codOperadora.invalid">
+              <ion-icon slot="icon-only" name="search"></ion-icon>
+            </ion-button>
+          </ion-item>
+          <ion-item mode="md" lines="none" class="item-error">
+            <ion-note color="warning" class="ion-padding-horizontal" *ngIf="(codOperadora.dirty || codOperadora.touched) && codOperadora.hasError('required')">Campo
+              obrigatório
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+            <ion-note color="warning" class="ion-padding-horizontal" *ngIf="codOperadora.hasError('pattern')">Só são permitidos valores numéricos
+              <ion-icon color="warning" class="margin-top-02em" name="alert"></ion-icon>
+            </ion-note>
+          </ion-item>
+          <ion-item class="ion-padding-top">
+            <ng-container *ngIf="listaOperadora.length == 0">
+              <ion-select class="select-full-width" interface="action-sheet" placeholder="Selecione sua Operadora"  formControlName="operadora" cancelText="Cancelar">
+              </ion-select>
+            </ng-container>
+            <ng-container *ngIf="listaOperadora.length > 0">
+              <ion-select class="select-full-width" interface="action-sheet"
+                placeholder="Selecione sua Operadora"  formControlName="operadora" cancelText="Cancelar" (ionChange)="mudarCor();">
+                <ion-select-option *ngFor="let operadora of listaOperadora" [value]="operadora.idOperadora">
+                  {{operadora.nomeOperadora}}
+                </ion-select-option>
+              </ion-select>
+            </ng-container>
+          </ion-item>
+          <ion-button class="ion-margin-top custom-button" expand="block" size="large" (click)="selecionarOperadora()"
+            [disabled]="listaOperadora.length < 1 || !operadora.valid ">
+            CONTINUAR           
+          </ion-button>
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

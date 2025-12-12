@@ -1,0 +1,47 @@
+.card-sem-espaco{
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.list-md{
+    padding-top: 0px;
+}
+
+.item_alert{
+    --padding-start: 8px;
+    --min-height: 0px;
+}  
+
+.hydrated{
+    align-items: center;
+}    
+
+.paginador {
+  border: 1px solid var(--ion-color-primary);
+  text-align: center;
+  border-radius: 4px;
+}
+
+.paginador:hover {
+    border: 1px solid var(--ion-color-primary-shade);
+    transform: scale(1.0); 
+    box-shadow: 0 5px 15px var(--ion-color-primary-tint);
+    background-color: var(--ion-color-primary);   
+}
+
+.linkPaginador:hover{
+    color: var(--ion-color-primary-contrast);
+}
+
+.paginador1 {
+    border: 1px solid var(--ion-color-primary-shade);
+    transform: scale(1.0); 
+    box-shadow: 0 5px 15px var(--ion-color-primary-tint);
+    background-color: var(--ion-color-primary);
+    text-align: center;
+    border-radius: 4px;   
+}
+
+.linkPaginador1{
+    color: var(--ion-color-primary-contrast);
+}

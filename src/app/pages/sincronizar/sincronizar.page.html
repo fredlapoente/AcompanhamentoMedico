@@ -1,0 +1,198 @@
+<ion-header>
+    <ion-toolbar class="ion-text-center">
+        <ion-buttons slot="start">
+        <ion-back-button defaultHref="/menu-principal" text=""></ion-back-button>
+        </ion-buttons>
+        <ion-title class="ion-text-uppercase">Sincronizar Acompanhamentos</ion-title>
+        <ion-buttons slot="end">
+        <ion-menu-button menuId="main-content"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ion-segment (ionChange)="segmentChanged($event)" value="{{opcaoExibir}}">
+        <ion-segment-button value="sincronizar" (click)="buscarAcompanhamentosSincronizar()">
+            <ion-label>Sincronizar</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="comFalha" (click)="buscarAcompanhamentosFalha()">
+            <ion-label>Com Falha</ion-label>
+        </ion-segment-button>
+    </ion-segment> 
+    <ion-searchbar [(ngModel)]="filtroAcompanhamento" (keyup)="filtrarAcompanhamento($event)" (ionCancel)="cancelaFiltroAcompanhamento()" (ionClear)="cancelaFiltroAcompanhamento()" cancelButtonText="Cancelar" placeholder="Beneficiário, Senha ou Internação" [debounce]="250" inputmode="text" type="text" enterkeyhint="search" animated #searchInput></ion-searchbar>        
+    <ion-list *ngIf="opcaoExibir == 'sincronizar'">
+        <ion-item class="item_alert" *ngIf="listaAcompanhamentosSincronizarPagina.length > 0"> 
+            <ion-icon name="alert"></ion-icon>                           
+            <ion-label>Total para sincronizar: {{qtdGuiasSincronizar}}.</ion-label> 
+        </ion-item>            
+        <ion-chip *ngIf="listaAcompanhamentosSincronizarPagina.length > 0" (click)="marcarDesmarcarTodos()">
+            <ion-icon name="checkmark-circle" *ngIf="!flgMarcarTodos"></ion-icon>
+            <ion-label *ngIf="!flgMarcarTodos">Marcar Todos da Página</ion-label>
+            <ion-icon name="checkmark-circle" *ngIf="flgMarcarTodos"></ion-icon>
+            <ion-label *ngIf="flgMarcarTodos">Desmarcar Todos da Página</ion-label>
+        </ion-chip>               
+        <ion-card *ngFor="let acompanhamento of listaAcompanhamentosSincronizarPagina">
+            <ion-card-header>
+                <ion-row (click)="exibirInfoSincronizar(acompanhamento)"> 
+                <ion-col size="2">
+                    <ion-button size="small" fill="clear">
+                        <ion-icon slot="icon-only" name="add-circle" *ngIf="!acompanhamento.exibeDadosSincronismo"></ion-icon> 
+                        <ion-icon slot="icon-only" name="remove-circle" *ngIf="acompanhamento.exibeDadosSincronismo"></ion-icon>
+                    </ion-button>                
+                </ion-col>
+                <ion-col size="10">
+                    <ion-card-title><span [innerHTML]="acompanhamento.beneficiario.nomeBeneficiario"></span></ion-card-title>
+                </ion-col>                                
+                </ion-row>
+            </ion-card-header>
+            <ion-card-content class="card-conteudo">      
+                <ion-row>
+                    <ion-col>
+                        <span class="texto-card-label">Carteira: </span><span class="texto-card-text" [innerHTML]="acompanhamento.beneficiario.carteiraBeneficiario"></span>
+                        <br>
+                        <span class="texto-card-label">Senha: </span><span class="texto-card-text" [innerHTML]="acompanhamento.senhaAutorizacao.senha"></span>
+                        <br>
+                        <span class="texto-card-label">Prestador: </span><span class="texto-card-text" [innerHTML]="acompanhamento.prestador.nomePrestador"></span>
+                        <br>
+                        <span class="texto-card-label">Status: </span><span class="texto-card-text" [innerHTML]="acompanhamento.status"></span>
+                        <div *ngIf="!acompanhamento.flgExibeGifProcessando && acompanhamento.protocoloSincronismo != null">
+                            <span class="texto-card-label">Status Sincronismo: </span><span class="texto-card-text" [innerHTML]="acompanhamento.statusSincronismo"></span>
+                            <br>
+                            <span class="texto-card-label">Protocolo: </span><span class="texto-card-text" [innerHTML]="acompanhamento.protocoloSincronismo"></span>
+                        </div>
+                        <div *ngIf="!acompanhamento.flgExibeGifProcessando && acompanhamento.protocoloSincronismo != null && acompanhamento.erroAnexoAcompanhamento != '' && acompanhamento.erroAnexoAcompanhamento != null">
+                            <br>
+                            <span class="texto-card-label">Erro: </span><span class="texto-card-text" [innerHTML]="acompanhamento.erroAnexoAcompanhamento"></span>
+                        </div>
+                    </ion-col>             
+                </ion-row>                  
+            </ion-card-content>
+            <ion-card-content class="card-conteudo card-sem-espaco" *ngIf="acompanhamento.exibeDadosSincronismo && acompanhamento.listaAcompanhamentoDia.length > 0">
+                <ion-list *ngFor="let acompanhamentoDia of acompanhamento.listaAcompanhamentoDia">
+                    <ion-item>                            
+                        <ion-toggle (ionChange)="atualizaSincronizarDia($event,acompanhamento, acompanhamentoDia)" [checked]="acompanhamentoDia.flgSincronizar" *ngIf="!acompanhamentoDia.flgExibeSucessoProcesso && !acompanhamentoDia.flgExibeErroProcesso"></ion-toggle>
+                        <ion-label>{{acompanhamentoDia.diaAcompanhamento}}</ion-label> 
+                        <ion-spinner name="lines" color="success" *ngIf="acompanhamento.flgExibeGifProcessando && acompanhamentoDia.flgSincronizar"></ion-spinner>
+                        <ion-icon name="checkmark-circle" *ngIf="acompanhamentoDia.flgExibeSucessoProcesso"></ion-icon>
+                        <ion-icon name="close-circle" *ngIf="acompanhamentoDia.flgExibeErroProcesso" (click)="visualizarErroSincronismo(acompanhamentoDia.erroSincronismo)"></ion-icon>
+                    </ion-item>
+                </ion-list>         
+            </ion-card-content>
+            <ion-card-content class="card-conteudo card-sem-espaco" *ngIf="acompanhamento.exibeDadosSincronismo && acompanhamento.listaAcompanhamentoDia.length == 0">
+                <ion-list>
+                    <ion-item>                            
+                        <ion-toggle (ionChange)="atualizaSincronizarAcompanhamento($event,acompanhamento)" [checked]="acompanhamento.flgSincronizar" *ngIf="!acompanhamento.flgExibeSucessoProcesso && !acompanhamento.flgExibeErroProcesso"></ion-toggle>
+                        <ion-label>Sincronizar</ion-label>
+                        <ion-spinner name="lines" color="success" *ngIf="acompanhamento.flgExibeGifProcessando && acompanhamento.flgSincronizar"></ion-spinner>
+                        <ion-icon name="checkmark-circle" *ngIf="acompanhamento.flgExibeSucessoProcesso"></ion-icon>
+                        <ion-icon name="close-circle" *ngIf="acompanhamento.flgExibeErroProcesso" (click)="visualizarErroSincronismo(acompanhamento.erroSincronismo)"></ion-icon>
+                    </ion-item>
+                </ion-list>         
+            </ion-card-content>    
+        </ion-card>
+        <ion-row *ngIf="listaAcompanhamentosSincronizarPagina.length == 0">
+            <ion-col size="12" class="ion-text-center">
+                <ion-label>Não há acompanhamento</ion-label>
+            </ion-col>
+        </ion-row>
+        <ion-row *ngIf="listaAcompanhamentosSincronizarPagina.length > 0">
+            <ion-col size="12" class="ion-text-center">
+                <ion-button id="btnSincronizar" [disabled]="!flgHabilitaBtnSincronizar" expand="block" size="large" (click)="confirmarSincronizar()">Sincronizar</ion-button>
+            </ion-col>
+        </ion-row>        
+        <ion-row *ngIf="paginadorSincronizar.paginas && paginadorSincronizar.paginas.length" class="ion-justify-content-center">
+            <ion-col size="2" *ngFor="let pagina of paginadorSincronizar.paginas" >
+                <div class="paginador" [ngClass]="{'paginador': paginaAtualSincronismo != pagina, 'paginador1': paginaAtualSincronismo == pagina}" >
+                    <a class="linkPaginador" [ngClass]="{'linkPaginador': paginaAtualSincronismo != pagina, 'linkPaginador1': paginaAtualSincronismo == pagina}" (click)="setPaginaSincronizar(pagina,paginadorSincronizar.tamanhoPagina,paginadorSincronizar.totalPaginas)">{{pagina}}</a>
+                </div>
+            </ion-col>             
+        </ion-row> 
+    </ion-list> 
+    <ion-list *ngIf="opcaoExibir == 'comFalha'">
+        <ion-item class="item_alert" *ngIf="listaAcompanhamentosFalhaPagina.length > 0"> 
+            <ion-icon name="alert"></ion-icon>                           
+            <ion-label>Total de Acompanhamentos com falha: {{qtdGuiasFalha}}.</ion-label> 
+        </ion-item>
+        <ion-card *ngFor="let acompanhamento of listaAcompanhamentosFalhaPagina">
+            <ion-card-header>
+                <ion-row (click)="exibirInfoSincronizar(acompanhamento)"> 
+                <ion-col size="2">
+                    <ion-button size="small" fill="clear">
+                        <ion-icon slot="icon-only" name="add-circle" *ngIf="!acompanhamento.exibeDadosSincronismo"></ion-icon> 
+                        <ion-icon slot="icon-only" name="remove-circle" *ngIf="acompanhamento.exibeDadosSincronismo"></ion-icon>
+                    </ion-button>                
+                </ion-col>
+                <ion-col size="10">
+                    <ion-card-title><span [innerHTML]="acompanhamento.beneficiario.nomeBeneficiario"></span></ion-card-title>
+                </ion-col>                                
+                </ion-row>
+            </ion-card-header>
+            <ion-card-content class="card-conteudo">      
+                <ion-row>
+                    <ion-col>
+                    <span class="texto-card-label">Carteira: </span><span class="texto-card-text" [innerHTML]="acompanhamento.beneficiario.carteiraBeneficiario"></span>
+                    <br>
+                    <span class="texto-card-label">Senha: </span><span class="texto-card-text" [innerHTML]="acompanhamento.senhaAutorizacao.senha"></span>
+                    <br>
+                    <span class="texto-card-label">Prestador: </span><span class="texto-card-text" [innerHTML]="acompanhamento.prestador.nomePrestador"></span>
+                    <br>
+                    <span class="texto-card-label">Protocolo sinc: </span><span class="texto-card-text" [innerHTML]="acompanhamento.protocoloSincronismo"></span>
+                    <br>
+                    <span class="texto-card-label" *ngIf="acompanhamento.flgEmailEnviado">E-mail enviado</span>
+                    <span class="texto-card-label" *ngIf="!acompanhamento.flgEmailEnviado">E-mail não enviado</span>
+                    </ion-col>             
+                </ion-row>                    
+            </ion-card-content>
+            <ion-card-content class="card-conteudo card-sem-espaco" *ngIf="acompanhamento.exibeDadosSincronismo && acompanhamento.listaAcompanhamentoDia.length > 0">
+                <ion-row *ngIf="acompanhamento.erroAnexoAcompanhamento !== null && acompanhamento.erroAnexoAcompanhamento != ''"> 
+                    <ion-col size="12">
+                        <span class="texto-card-label">Erro de sincronismo: </span>
+                            <span class="texto-card-text" [innerHTML]="acompanhamento.erroAnexoAcompanhamento"></span>
+                    </ion-col>
+                </ion-row>
+                <ion-list *ngFor="let acompanhamentoDia of acompanhamento.listaAcompanhamentoDia">
+                    <ion-item>                            
+                        <ion-label>{{acompanhamentoDia.diaAcompanhamento}}</ion-label> 
+                        <ion-icon name="close-circle" (click)="visualizarErroSincronismo(acompanhamentoDia.erroSincronismo)"></ion-icon>
+                    </ion-item>
+                </ion-list>         
+            </ion-card-content>
+            <ion-card-content class="card-conteudo card-sem-espaco" *ngIf="acompanhamento.exibeDadosSincronismo && acompanhamento.listaAcompanhamentoDia.length == 0">
+                <ion-row> 
+                    <ion-col size="12">
+                        <span class="texto-card-label">Erro de sincronismo: </span>
+                            <span class="texto-card-text" *ngIf="acompanhamento.erroSincronismo !== null && acompanhamento.erroSincronismo !== ''" [innerHTML]="acompanhamento.erroSincronismo"></span>
+                            <span class="texto-card-text" *ngIf="acompanhamento.erroAnexoAcompanhamento !== null && acompanhamento.erroAnexoAcompanhamento != ''" [innerHTML]="acompanhamento.erroAnexoAcompanhamento"></span>
+                    </ion-col>
+                </ion-row>        
+            </ion-card-content>
+            <ion-card-content class="card-conteudo" *ngIf="acompanhamento.exibeDadosSincronismo">                
+                <ion-row> 
+                    <ion-col size="6" *ngIf="!acompanhamento.flgEmailEnviado && !acompanhamento.flgPendenciaVerificada">
+                        <ion-button id="btnEnviarEmail" expand="block" (click)="confirmaEnviarEmail(acompanhamento)">Enviar e-mail</ion-button>
+                    </ion-col>                    
+                    <ion-col size="6" *ngIf="acompanhamento.dataPendencia != null && !acompanhamento.flgPendenciaVerificada">
+                        <ion-button id="btnReEnviarEmail" expand="block" (click)="confirmaEnviarEmail(acompanhamento)">Reenviar e-mail</ion-button>
+                    </ion-col>
+                    <ion-col size="6">
+                        <ion-button id="btnExcluirAcompanhamento" expand="block" (click)="excluirAcompanhamento(acompanhamento)">Excluir</ion-button>
+                    </ion-col>
+                    <ion-col size="12" *ngIf="acompanhamento.flgEmailEnviado && !acompanhamento.flgPendenciaVerificada">
+                        <ion-button id="btnVerificarPendencia" expand="block" (click)="verificarPendencia(acompanhamento)">Verificar Pendência</ion-button>
+                    </ion-col>                   
+                </ion-row>           
+            </ion-card-content>                   
+        </ion-card>
+        <ion-row *ngIf="listaAcompanhamentosFalhaPagina.length == 0">
+            <ion-col size="12" class="ion-text-center">
+                <ion-label>Não há acompanhamento</ion-label>                    
+            </ion-col>
+        </ion-row>        
+        <ion-row *ngIf="paginadorFalha.paginas && paginadorFalha.paginas.length" class="ion-justify-content-center">
+            <ion-col class="ion-text-center" size="2" *ngFor="let pagina of paginadorFalha.paginas">
+                <div class="paginador" [ngClass]="{'paginador': paginaAtualFalha != pagina, 'paginador1': paginaAtualFalha == pagina}" >
+                    <a class="linkPaginador" [ngClass]="{'linkPaginador': paginaAtualFalha != pagina, 'linkPaginador1': paginaAtualFalha == pagina}" (click)="setPaginaFalha(pagina,paginadorFalha.tamanhoPagina,paginadorFalha.totalPaginas)">{{pagina}}</a>
+                </div>    
+            </ion-col>             
+        </ion-row>
+    </ion-list>   
+</ion-content>        

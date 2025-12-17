@@ -1,26 +1,30 @@
 #!/usr/bin/env bash
 set -e
 
-echo "Limpando configurações de assinatura em todos os arquivos…"
-
 PROJECT_FILE="platforms/ios/Saudi-AcomMed.xcodeproj/project.pbxproj"
 
-sed -i '' '/CODE_SIGN_STYLE/d' "$PROJECT_FILE"
-sed -i '' '/CODE_SIGN_IDENTITY/d' "$PROJECT_FILE"
-sed -i '' '/DEVELOPMENT_TEAM =/d' "$PROJECT_FILE"
-sed -i '' '/PROVISIONING_PROFILE/d' "$PROJECT_FILE"
-sed -i '' '/PROVISIONING_PROFILE_SPECIFIER/d' "$PROJECT_FILE"
+TEAM_ID="SSADB2592Z"
+PROFILE_NAME="Saudi-AcomMed IOS Dev"
+CODE_SIGN_ID="iPhone Developer"
 
-for f in $(find platforms/ios -name "*.xcconfig"); do
-    echo "Limpando $f"
-    sed -i '' '/CODE_SIGN/d' "$f"
-    sed -i '' '/DEVELOPMENT_TEAM/d' "$f"
-    sed -i '' '/PROVISIONING_PROFILE/d' "$f"
-done
+echo "Aplicando assinatura manual no projeto iOS..."
 
-sed -i '' 's/buildSettings = {/buildSettings = {\nDEVELOPMENT_TEAM = SSADB2592Z;\nCODE_SIGN_STYLE = Automatic;/' "$PROJECT_FILE"
+# Forçar assinatura manual
+sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' "$PROJECT_FILE" || true
 
-echo "Forçando CODE_SIGNING_ALLOWED = YES"
-sed -i '' 's/buildSettings = {/buildSettings = {\nCODE_SIGNING_ALLOWED = YES;/' "$PROJECT_FILE"
+# Definir Team ID
+sed -i '' "s/DEVELOPMENT_TEAM = .*;/DEVELOPMENT_TEAM = $TEAM_ID;/g" "$PROJECT_FILE"
 
-echo "Finalizado."
+# Definir provisioning profile
+grep -q "PROVISIONING_PROFILE_SPECIFIER" "$PROJECT_FILE" \
+  || sed -i '' "/DEVELOPMENT_TEAM = $TEAM_ID;/a\\
+				PROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\";
+" "$PROJECT_FILE"
+
+# Definir identidade de assinatura
+grep -q "CODE_SIGN_IDENTITY = \"$CODE_SIGN_ID\"" "$PROJECT_FILE" \
+  || sed -i '' "/PROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\";/a\\
+				CODE_SIGN_IDENTITY = \"$CODE_SIGN_ID\";
+" "$PROJECT_FILE"
+
+echo "Assinatura manual aplicada com sucesso."

@@ -1,73 +1,47 @@
 workflows:
   ios-cordova-debug:
-    name: Build iOS Cordova DEBUG (Provisioning Manual)
+    name: Build iOS Cordova DEBUG (Manual Signing)
 
     environment:
       node: 14.20.0
       xcode: 16.1
-      vars:
-        CORDOVA_IOS_VERSION: "6.2.0"
 
     scripts:
-      - name: Instalar Cordova e dependências
+      - name: Instalar Cordova
         script: |
           set -e
-          npm install -g npm@6.14.17
           npm install -g cordova@11.1.0
           npm install
-
-      - name: Remover plataforma Android (evitar conflitos)
-        script: |
-          set -e
-          cordova platform remove android || true
 
       - name: Preparar plataforma iOS
         script: |
           set -e
           cordova platform remove ios || true
-          cordova platform add ios@${CORDOVA_IOS_VERSION}
+          cordova platform add ios@6.2.0
 
-      - name: DEBUG plataformas instaladas
+      - name: Corrigir script de assinatura
         script: |
           set -e
-          cordova platform ls
-
-      - name: Forçar conversão do fix_signing.sh (CRLF → LF)
-        script: |
-          set -e
-          echo "Convertendo fix_signing.sh para LF..."
-
           tr -d '\r' < fix_signing.sh > fix_signing.tmp
           mv fix_signing.tmp fix_signing.sh
-
-          sed -i '' '1 s|.*|#!/usr/bin/env bash|' fix_signing.sh
           chmod +x fix_signing.sh
 
-      - name: Aplicar patch de assinatura (manual)
+      - name: Aplicar assinatura manual
         script: |
           set -e
           ./fix_signing.sh
 
-      - name: DEBUG assinatura no projeto
+      - name: Debug assinatura
         script: |
           set -e
-          PROJECT_FILE="platforms/ios/Saudi-AcomMed.xcodeproj/project.pbxproj"
-          echo "CODE_SIGN_IDENTITY:"
-          grep -R "CODE_SIGN_IDENTITY" -n "$PROJECT_FILE" || true
-          echo "DEVELOPMENT_TEAM:"
-          grep -R "DEVELOPMENT_TEAM" -n "$PROJECT_FILE" || true
-          echo "PROVISIONING_PROFILE_SPECIFIER:"
-          grep -R "PROVISIONING_PROFILE_SPECIFIER" -n "$PROJECT_FILE" || true
+          grep -R "CODE_SIGN_STYLE" -n platforms/ios/Saudi-AcomMed.xcodeproj/project.pbxproj
+          grep -R "PROVISIONING_PROFILE_SPECIFIER" -n platforms/ios/Saudi-AcomMed.xcodeproj/project.pbxproj
+          grep -R "CODE_SIGN_IDENTITY" -n platforms/ios/Saudi-AcomMed.xcodeproj/project.pbxproj
 
       - name: Build iOS DEBUG
         script: |
           set -e
-          echo "Iniciando build iOS DEBUG..."
-          cordova build ios \
-            --debug \
-            --device \
-            --buildConfig=build.json
+          cordova build ios --debug --device
 
     artifacts:
       - platforms/ios/build/device/**/*.app
-      - platforms/ios/build/device/**/*.xcarchive

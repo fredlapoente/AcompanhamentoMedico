@@ -2,17 +2,8 @@
   "ios": {
     "debug": {
       "developmentTeam": "SSADB2592Z",
-      "codeSignIdentity": "",
-      "provisioningProfile": "",
-      "provisioningProfileSpecifier": "",
-      "packageType": "developer"
-    },
-    "release": {
-      "developmentTeam": "SSADB2592Z",
-      "codeSignIdentity": "",
-      "provisioningProfile": "",
-      "provisioningProfileSpecifier": "",
-      "packageType": "app-store"
+      "provisioningProfile": "Saudi-AcomMed IOS Dev",
+      "codeSignIdentity": "Apple Development"
     }
   }
 }

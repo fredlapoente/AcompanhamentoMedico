@@ -1,65 +1,67 @@
 workflows:
-  ios-cordova-signed:
-    name: Build iOS Cordova (Assinatura Automática)
+  ios-cordova-debug:
+    name: iOS Cordova Debug (Provisioning Manual)
 
     environment:
       node: 14.20.0
       xcode: 16.1
-      vars:
-        CORDOVA_IOS_VERSION: "6.2.0"
 
     scripts:
+      # -------------------------------
+      # 1. Dependências
+      # -------------------------------
       - name: Instalar Cordova e dependências
         script: |
           npm install -g npm@6.14.17
           npm install -g cordova@11.1.0
           npm install
 
-      - name: Remover plataforma Android (evitar conflitos)
-        script: |
-          cordova platform remove android || true
-
-      - name: Preparar plataforma iOS
+      # -------------------------------
+      # 2. Limpeza de plataformas
+      # -------------------------------
+      - name: Remover plataformas antigas
         script: |
           cordova platform remove ios || true
-          cordova platform add ios@${CORDOVA_IOS_VERSION}
+          cordova platform remove android || true
 
-      - name: Forçar conversão do fix_signing.sh (CRLF → LF)
+      # -------------------------------
+      # 3. Adicionar iOS
+      # -------------------------------
+      - name: Adicionar plataforma iOS
         script: |
-          echo "Convertendo fix_signing.sh para LF (método TR + SED)..."
+          cordova platform add ios@6.2.0
 
-          # Remove CRLF
+      # -------------------------------
+      # 4. Corrigir CRLF + Permissões
+      # -------------------------------
+      - name: Normalizar fix_signing.sh
+        script: |
           tr -d '\r' < fix_signing.sh > fix_signing.tmp
           mv fix_signing.tmp fix_signing.sh
-
-          # Corrige shebang
-          sed -i '' '1 s|.*|#!/usr/bin/env bash|' fix_signing.sh
-
+          sed -i '' '1s|.*|#!/usr/bin/env bash|' fix_signing.sh
           chmod +x fix_signing.sh
-          echo "Arquivo convertido corretamente!"
 
-      - name: DEBUG antes do patch
-        script: |
-          echo "===== ANTES DO PATCH ====="
-          PROJECT_FILE="platforms/ios/Saudi-AcomMed.xcodeproj/project.pbxproj"
-          grep -R "CODE_SIGN_IDENTITY" -n $PROJECT_FILE || echo "Nenhum CODE_SIGN_IDENTITY encontrado"
-          grep -R "DEVELOPMENT_TEAM" -n $PROJECT_FILE || echo "Nenhum DEVELOPMENT_TEAM encontrado"
-
+      # -------------------------------
+      # 5. Aplicar patch de assinatura
+      # -------------------------------
       - name: Aplicar patch de assinatura
         script: |
           ./fix_signing.sh
 
-      - name: DEBUG depois do patch
+      # -------------------------------
+      # 6. Validação do ambiente iOS
+      # -------------------------------
+      - name: Validar certificados e provisioning
         script: |
-          echo "===== DEPOIS DO PATCH ====="
-          PROJECT_FILE="platforms/ios/Saudi-AcomMed.xcodeproj/project.pbxproj"
-          grep -R "CODE_SIGN_IDENTITY" -n $PROJECT_FILE || echo "Nenhum CODE_SIGN_IDENTITY encontrado"
-          grep -R "DEVELOPMENT_TEAM" -n $PROJECT_FILE || echo "Nenhum DEVELOPMENT_TEAM encontrado"
+          echo "== CERTIFICADOS =="
+          security find-identity -v -p codesigning
 
-      - name: Build iOS com assinatura automática
+          echo "== PROFILES INSTALADOS =="
+          ls -l ~/Library/MobileDevice/Provisioning\ Profiles
+
+      # -------------------------------
+      # 7. Build DEBUG com profile DEV
+      # -------------------------------
+      - name: Build iOS DEBUG
         script: |
-          cordova build ios --debug --device --buildConfig=build.json
-
-    artifacts:
-      - platforms/ios/build/device/*.ipa
-      - platforms/ios/build/**/*.xcarchive
+          cordova build i

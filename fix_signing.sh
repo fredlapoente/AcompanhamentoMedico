@@ -20,4 +20,7 @@ done
 
 sed -i '' 's/buildSettings = {/buildSettings = {\nDEVELOPMENT_TEAM = SSADB2592Z;\nCODE_SIGN_STYLE = Automatic;/' "$PROJECT_FILE"
 
+echo "Forçando CODE_SIGNING_ALLOWED = YES"
+sed -i '' 's/buildSettings = {/buildSettings = {\nCODE_SIGNING_ALLOWED = YES;/' "$PROJECT_FILE"
+
 echo "Finalizado."

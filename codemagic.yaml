@@ -58,7 +58,7 @@ workflows:
 
       - name: Build iOS com assinatura automática
         script: |
-          cordova build ios --release --device --buildConfig=build.json -- --allowProvisioningUpdates
+          cordova build ios --debug --device --buildConfig=build.json
 
     artifacts:
       - platforms/ios/build/device/*.ipa

@@ -1,46 +1,45 @@
 workflows:
   ios-cordova-debug:
-    name: Build iOS Cordova DEBUG (Manual Signing)
+    name: iOS Cordova DEBUG – Manual Signing
 
     environment:
       node: 14.20.0
       xcode: 16.1
 
     scripts:
-      - name: Instalar Cordova
+      - name: Instalar dependências
         script: |
-          set -e
           npm install -g cordova@11.1.0
           npm install
 
       - name: Preparar plataforma iOS
         script: |
-          set -e
           cordova platform remove ios || true
           cordova platform add ios@6.2.0
 
-      - name: Corrigir script de assinatura
+      - name: Corrigir fix_signing.sh
         script: |
-          set -e
           tr -d '\r' < fix_signing.sh > fix_signing.tmp
           mv fix_signing.tmp fix_signing.sh
           chmod +x fix_signing.sh
 
       - name: Aplicar assinatura manual
         script: |
-          set -e
           ./fix_signing.sh
 
       - name: Debug assinatura
         script: |
-          set -e
-          grep -R "CODE_SIGN_STYLE" -n platforms/ios/Saudi-AcomMed.xcodeproj/project.pbxproj
-          grep -R "PROVISIONING_PROFILE_SPECIFIER" -n platforms/ios/Saudi-AcomMed.xcodeproj/project.pbxproj
-          grep -R "CODE_SIGN_IDENTITY" -n platforms/ios/Saudi-AcomMed.xcodeproj/project.pbxproj
+          echo "==== CODE_SIGN_STYLE ===="
+          grep -R "CODE_SIGN_STYLE" -n platforms/ios/Saudi-AcomMed.xcodeproj/project.pbxproj || true
+
+          echo "==== PROVISIONING_PROFILE_SPECIFIER ===="
+          grep -R "PROVISIONING_PROFILE_SPECIFIER" -n platforms/ios/Saudi-AcomMed.xcodeproj/project.pbxproj || true
+
+          echo "==== CODE_SIGN_IDENTITY ===="
+          grep -R "CODE_SIGN_IDENTITY" -n platforms/ios/Saudi-AcomMed.xcodeproj/project.pbxproj || true
 
       - name: Build iOS DEBUG
         script: |
-          set -e
           cordova build ios --debug --device
 
     artifacts:

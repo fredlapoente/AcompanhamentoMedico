@@ -11,7 +11,7 @@ workflows:
       - name: Install dependencies
         script: |
           npm install -g cordova@11
-          npm install
+          npm install --legacy-peer-deps
 
       - name: Prepare iOS platform
         script: |

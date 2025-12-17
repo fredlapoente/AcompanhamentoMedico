@@ -10,11 +10,13 @@ workflows:
     scripts:
       - name: Install dependencies
         script: |
+          export NPM_CONFIG_LEGACY_PEER_DEPS=true
           npm install -g cordova@11
-          npm install --legacy-peer-deps
+          npm install
 
       - name: Prepare iOS platform
         script: |
+          export NPM_CONFIG_LEGACY_PEER_DEPS=true
           cordova platform remove ios || true
           cordova platform add ios@6.2.0
 
